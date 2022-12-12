@@ -1,5 +1,7 @@
 @import 'normalize.css';
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
 
 :root {
     --primary-color: hsla(253, 65%, 35%, 1);
@@ -22,7 +24,33 @@ html {
 }
 
 body {
+    padding: 20px;
     font-family: 'Lato', sans-serif;
     font-size: 1.6rem;
     line-height: 1.5;
+    overflow: scroll;
+}
+
+// Scrollbar CSS
+html *::-webkit-scrollbar {
+    border-radius: 0;
+    width: 8px;   
+}
+
+html *::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: transparent;
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.15);
+    }
+}
+
+html *::-webkit-scrollbar-track {
+    border-radius: 0;
+    background-color: transparent;
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0);
+    }
 }

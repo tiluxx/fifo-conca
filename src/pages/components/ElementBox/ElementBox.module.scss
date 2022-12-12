@@ -1,0 +1,59 @@
+.wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    &:hover > .select-frame,
+    &:hover > .resize-pointer-wrapper > .resize-pointer {
+        display: block;
+    }
+}
+
+.container {
+    width: 100%;
+    
+    &:focus-visible {
+        outline: none;
+    }
+}
+
+.select-frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    -webkit-box-shadow: 0 0 0 2px #4285f4;
+    box-shadow: 0 0 0 2px #4285f4;
+    pointer-events: none;
+    display: none;
+}
+
+.resize-pointer-wrapper {
+    position: absolute;
+    right: 0%;
+    bottom: 0%;
+}
+
+.resize-pointer {
+    width: 16px;
+    height: 16px;
+    transition: 125ms;
+    background-color: #096bde;
+    border: 2px solid #fff;
+    border-radius: 32%;
+    pointer-events: all;
+    cursor: se-resize;
+}
+
+.delete-btn-text-wrapper,
+.delete-btn-image-wrapper {
+    position: absolute;
+    right: 0%;
+    cursor: pointer;
+}
+
+.delete-btn-text-wrapper {
+    left: 0%;
+    bottom: 0%;
+}

@@ -1,0 +1,30 @@
+.editor-wrapper {
+    &.editor-text-align--left {
+        text-align: left;
+    }
+
+    &.editor-text-align--center {
+        text-align: center;
+    }
+
+    &.editor-text-align--right {
+        text-align: right;
+    }
+
+    &.editor-text-align--justify {
+        text-align: justify;
+    }
+}
+
+.editor-wrapper .blockStyle-blockquote {
+    border-left: 5px solid #eee;
+    color: #666;
+    font-family: 'Hoefler Text', 'Georgia', serif;
+    font-style: italic;
+    margin: 16px 0;
+    padding: 10px 20px;
+}
+
+.editor-hide-placeholder .public-DraftEditorPlaceholder-root {
+    display: none;
+}

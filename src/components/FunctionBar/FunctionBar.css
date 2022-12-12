@@ -1,0 +1,25 @@
+.JoySlider-thumb {
+    border-radius: 100%;
+}
+
+.JoySlider-thumb::before {
+    top: unset;
+    left: unset;
+    width: 75%;
+    height: 75%;
+}
+
+.Joy-focusVisible,
+.JoySlider-thumb:focus-visible {
+    outline-offset: unset;
+    outline: unset;
+}
+
+.JoySelect-root {
+    width: 100%;
+}
+
+.MuiInputBase-input.MuiOutlinedInput-input {
+    height: unset;
+    padding: 4px 8px;
+}

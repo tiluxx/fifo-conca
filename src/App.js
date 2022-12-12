@@ -1,8 +1,16 @@
-import { Fragment } from 'react'
+import { Fragment, useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { publicRoutes } from '~/routes'
+import WebFont from 'webfontloader'
+import fontList from '~/assets/fonts'
 
 function App() {
+    useEffect(() => {
+        WebFont.load({
+            ...fontList,
+        })
+    }, [])
+
     return (
         <div className="App">
             <Routes>

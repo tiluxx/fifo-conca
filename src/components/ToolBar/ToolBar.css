@@ -1,0 +1,18 @@
+.JoyListItemContent-root {
+    font-size: 1.4rem;
+}
+
+.JoyListItemDecorator-root {
+    min-inline-size: 3rem;
+}
+
+.JoyIconButton-root {
+    min-width: var(--IconButton-size, 3.2rem);
+    min-height: var(--IconButton-size, 3.2rem);
+    border-radius: 10px;
+}
+
+.MuiSvgIcon-root {
+    font-size: 2rem;
+    
+}
