@@ -1,4 +1,5 @@
 import { Fragment, useState, useEffect, useRef, useContext } from 'react'
+import classNames from 'classnames/bind'
 import ReactCrop, { centerCrop, makeAspectCrop, Crop } from 'react-image-crop'
 import Button from '@mui/joy/Button'
 import TextField from '@mui/material/TextField'
@@ -8,6 +9,9 @@ import Stack from '@mui/joy/Stack'
 import 'react-image-crop/dist/ReactCrop.css'
 
 import { WorkspaceActionContext } from '~/pages/Workspace'
+import styles from './ModalCropper.module.scss'
+
+const cx = classNames.bind(styles)
 
 function centerAspectCrop(mediaWidth, mediaHeight, aspect) {
     return centerCrop(
@@ -35,8 +39,8 @@ function ModalCropper({ el }) {
     const [crop, setCrop] = useState(Crop)
     const [scale, setScale] = useState(1)
     const [rotate, setRotate] = useState(0)
+    // eslint-disable-next-line no-unused-vars
     const [aspect, setAspect] = useState(undefined)
-    // const [croppedImageUrl, setCroppedImageUrl] = useState('')
 
     useEffect(() => {
         if (imageBoxState.box.i === el.i && imageBoxState.selectFile.isHavingFile) {
@@ -45,9 +49,6 @@ function ModalCropper({ el }) {
             if (targetFile) {
                 setCrop(undefined)
                 setImgSrc(targetFile || '')
-                // const reader = new FileReader()
-                // reader.addEventListener('load', () => setImgSrc(reader.result?.toString() || ''))
-                // reader.readAsDataURL(targetFile)
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -131,7 +132,6 @@ function ModalCropper({ el }) {
                     let fileUrl = ''
                     window.URL.revokeObjectURL(fileUrl)
                     fileUrl = window.URL.createObjectURL(blob)
-                    console.log(fileUrl)
                     resolve(fileUrl)
                 },
                 'image/*',
@@ -148,6 +148,7 @@ function ModalCropper({ el }) {
                     aria-describedby="modal-dialog-cropper-description"
                     sx={{
                         maxWidth: 500,
+                        maxHeight: '70%',
                         borderRadius: 'md',
                         p: 3,
                         boxShadow: 'lg',
@@ -158,9 +159,15 @@ function ModalCropper({ el }) {
                             e.preventDefault()
                             setOpen(false)
                         }}
+                        className={cx('form-wrapper')}
                     >
-                        <Stack spacing={2}>
-                            <div>
+                        <Stack
+                            spacing={2}
+                            sx={{
+                                maxHeight: '100%',
+                            }}
+                        >
+                            <div className={cx('input-wrapper')}>
                                 <span>Scale</span>
                                 <TextField
                                     id="scale-input"
@@ -168,22 +175,25 @@ function ModalCropper({ el }) {
                                     step="0.1"
                                     value={rotate}
                                     disabled={!imgSrc}
-                                    fullWidth
                                     variant="outlined"
+                                    fullWidth
                                     onChange={(e) => setScale(Number(e.target.value))}
                                 />
                             </div>
-                            <div>
+                            <div className={cx('input-wrapper')}>
                                 <span>Rotate</span>
                                 <TextField
                                     id="rotate-input"
                                     type="number"
                                     value={rotate}
                                     disabled={!imgSrc}
+                                    variant="outlined"
+                                    fullWidth
                                     onChange={(e) => setRotate(Math.min(180, Math.max(-180, Number(e.target.value))))}
                                 />
                             </div>
                             <ReactCrop
+                                className={cx('cropper-wrapper')}
                                 crop={crop}
                                 onChange={(_, percentCrop) => setCrop(percentCrop)}
                                 onComplete={(c) => handleCropComplete(c)}

@@ -11,25 +11,36 @@ import styles from './ImageBox.module.scss'
 const cx = classNames.bind(styles)
 
 function ImageBox({ el }) {
-    const { imageBoxState, setImageBoxState, onRemoveItem, setLayout } = useContext(WorkspaceActionContext)
+    const { imageBoxState, setImageBoxState, setTextBoxState, onRemoveItem, setLayout } =
+        useContext(WorkspaceActionContext)
+    const [curBox, setCurBox] = useState(el)
     const [imgSrc, setImg] = useState('')
+    const [imageOpacity, setImageOpacity] = useState(100)
 
     const imageRef = useRef()
 
     // const focus = () => imageRef.component.focus()
 
     useEffect(() => {
-        if (imageBoxState.box.i === el.i && imageBoxState.croppedImageUrl !== '') {
-            setImg(imageBoxState.croppedImageUrl)
+        if (imageBoxState.box.i === curBox.i) {
+            console.log(imageBoxState.imageOpacity)
+            setImageOpacity(imageBoxState.imageOpacity)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [imageBoxState])
+
+    useEffect(() => {
+        if (imageBoxState.box.i === curBox.i && imageBoxState.croppedImageUrl !== '') {
+            setImg(imageBoxState.croppedImageUrl)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [imageBoxState, imageBoxState.croppedImageUrl])
 
     const onSelectFile = (imageList, addUpdateIndex) => {
         setImageBoxState((prev) => {
             const newState = {
                 ...prev,
-                box: el,
+                box: curBox,
                 selectFile: {
                     ...prev.selectFile,
                     file: imageList[0].data_url,
@@ -40,15 +51,45 @@ function ImageBox({ el }) {
         })
     }
 
+    const onFocusImage = (e) => {
+        e.preventDefault()
+        setImageBoxState((prev) => {
+            const newState = {
+                ...prev,
+                box: curBox,
+                croppedImageUrl: imgSrc,
+                imageOpacity,
+                selectFile: {
+                    file: [],
+                    isHavingFile: false,
+                },
+                isFocus: true,
+            }
+            return newState
+        })
+        setTextBoxState((prev) => {
+            const newState = {
+                ...prev,
+                isFocus: false,
+            }
+            return newState
+        })
+    }
+
     return (
-        <div className={cx('wrapper')} ref={imageRef}>
+        <div className={cx('wrapper')} style={{ opacity: `${imageOpacity}%` }} ref={imageRef}>
             <div className={cx('container')}>
                 {imgSrc !== '' ? (
-                    <Card component="div" sx={{ '--Card-radius': '0px', width: '100%', height: '100%' }}>
-                        <CardCover>
-                            <img alt="Crop" style={{ width: '100%', height: '100%' }} src={imgSrc} loading="lazy" />
-                        </CardCover>
-                    </Card>
+                    <div style={{ width: '100%', height: '100%' }} onClick={onFocusImage}>
+                        <Card
+                            component="div"
+                            sx={{ '--Card-radius': '0px', width: '100%', height: '100%', boxShadow: 'unset' }}
+                        >
+                            <CardCover>
+                                <img alt="Crop" style={{ width: '100%', height: '100%' }} src={imgSrc} loading="lazy" />
+                            </CardCover>
+                        </Card>
+                    </div>
                 ) : (
                     <ImageUploading
                         // value={images}

@@ -98,9 +98,15 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
     const [currentBreakpoint, setCurrentBreakpoint] = useState('lg')
     const [mounted, setMounted] = useState(false)
     const [layouts, setLayouts] = useState({ lg: [] })
-    const [textBoxState, setTextBoxState] = useState({ box: {}, editorState: null, changeStyles: () => {} })
+    const [textBoxState, setTextBoxState] = useState({
+        box: {},
+        editorState: null,
+        changeStyles: () => {},
+        textColor: '#1c1c1c',
+        textOpacity: 100,
+        isFocus: false,
+    })
     const [customStyles, setCustomStyles] = useState({
-        textAlignment: { textAlignLeft: false, textAlignCenter: false, textAlignRight: false, textAlignJustify: false },
         styleType: {
             styleNameConstant: '',
             typeName: '',
@@ -113,6 +119,8 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
             file: [],
             isHavingFile: false,
         },
+        imageOpacity: 100,
+        isFocus: false,
     })
 
     const onLayoutChange = (layout) => {
@@ -129,8 +137,8 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                 <div key={l.i} data-grid={l} onKeyDown={(e) => onRemoveItem(e, l)}>
                     {l.type === 'textBox' ? (
                         <Fragment>
-                            <ElementBox el={l}>
-                                <TextBox el={l} />
+                            <ElementBox id={l.i} el={l}>
+                                <TextBox id={l.i} el={l} />
                             </ElementBox>
                             <span
                                 style={{
@@ -146,8 +154,8 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                         </Fragment>
                     ) : (
                         <Fragment>
-                            <ElementBox el={l}>
-                                <ImageBox el={l} />
+                            <ElementBox id={l.i} el={l}>
+                                <ImageBox id={l.i} el={l} />
                             </ElementBox>
                             <span
                                 style={{
@@ -170,36 +178,23 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
     const onAddItem = ({ textBox = false, imageBox = false } = {}) => {
         setLayouts((prev) => {
             let curLg = [...prev.lg]
-            if (textBox) {
-                curLg = curLg.concat({
-                    x: 0,
-                    y: 0,
-                    w: 2,
-                    h: 6,
-                    i: uuidv4(),
-                    static: false,
-                    type: 'textBox',
-                })
-            }
-
-            if (imageBox) {
-                curLg = curLg.concat({
-                    x: 0,
-                    y: 0,
-                    w: 2,
-                    h: 6,
-                    i: uuidv4(),
-                    static: false,
-                    type: 'imageBox',
-                })
-            }
+            curLg = curLg.concat({
+                x: 0,
+                y: 0,
+                w: 2,
+                h: 6,
+                i: uuidv4(),
+                static: false,
+                order: curLg.length,
+                type: textBox ? 'textBox' : 'imageBox',
+            })
 
             return { lg: curLg }
         })
     }
 
     const onRemoveItem = (e, l) => {
-        if (e.keyCode === 46 || e.keyCode === 8) {
+        if (e.keyCode === 46) {
             setLayouts((prev) => {
                 let curLg = [...prev.lg]
                 let newLg = []
@@ -236,6 +231,52 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
         })
     }
 
+    const onRearrangeOrder = (boxState, type) => {
+        if (layouts.lg.length > 1) {
+            setLayouts((prev) => {
+                let curLg = [...prev.lg]
+                const curOrder = boxState.box.order
+                switch (type) {
+                    case 'forward':
+                        console.log('old: ', curLg[curOrder])
+                        console.log('old: ', curLg[curOrder + 1])
+                        ;[curLg[curOrder], curLg[curOrder + 1]] = [curLg[curOrder + 1], curLg[curOrder]]
+                        curLg[curOrder]['order'] = curOrder
+                        curLg[curOrder + 1]['order'] = curOrder + 1
+                        console.log('new: ', curLg[curOrder])
+                        console.log('new: ', curLg[curOrder + 1])
+                        break
+                    case 'backward':
+                        ;[curLg[curOrder], curLg[curOrder - 1]] = [curLg[curOrder - 1], curLg[curOrder]]
+                        curLg[curOrder]['order'] = curOrder
+                        curLg[curOrder - 1]['order'] = curOrder - 1
+                        break
+                    case 'to-front':
+                        ;[curLg[curOrder], curLg[curLg.length - 1]] = [curLg[curLg.length - 1], curLg[curOrder]]
+                        curLg[curOrder]['order'] = curOrder
+                        curLg[curLg.length - 1]['order'] = curLg.length - 1
+                        break
+                    case 'to-back':
+                        ;[curLg[curOrder], curLg[0]] = [curLg[0], curLg[curOrder]]
+                        curLg[curOrder]['order'] = curOrder
+                        curLg[0]['order'] = 0
+                        break
+                    default:
+                        break
+                }
+                // let newLg = []
+                // newLg = curLg.map((el) => {
+                //     if (el.i === boxState.box.i) {
+                //         el.order = boxState.box.order
+                //     }
+                //     return el
+                // })
+                curLg.sort((a, b) => (a.order > b.order ? 1 : b.order > a.order ? -1 : 0))
+                return { lg: curLg }
+            })
+        }
+    }
+
     const onBreakpointChange = (breakpoint) => {
         setCurrentBreakpoint(breakpoint)
     }
@@ -254,6 +295,7 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                 imageBoxState,
                 setImageBoxState,
                 onRemoveItemClick,
+                onRearrangeOrder,
             }}
         >
             <StyledEngineProvider injectFirst>

@@ -4,19 +4,28 @@ import { Editor, EditorState, RichUtils, Modifier, getDefaultKeyBinding } from '
 import { WorkspaceActionContext } from '~/pages/Workspace'
 import styles from './TextBox.module.scss'
 import styleList from './styleList'
+import 'draft-js/dist/Draft.css'
+import './TextBox.css'
 
 const cx = classNames.bind(styles)
 
-function TextBox({ el }) {
-    const { textBoxState, setTextBoxState, customStyles, setLayout } = useContext(WorkspaceActionContext)
+function TextBox({ id, el }) {
+    const { textBoxState, setTextBoxState, setImageBoxState, customStyles, setLayout } =
+        useContext(WorkspaceActionContext)
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty())
+    const [curBox, setCurBox] = useState(el)
     const [placeholder, setPlaceholder] = useState(false)
+    const [textColor, setTextColor] = useState(textBoxState.textColor)
+    const [textOpacity, setTextOpacity] = useState(100)
+    const [textAlign, setTextAlign] = useState('left')
 
     const editorRef = useRef()
 
     useEffect(() => {
-        if (textBoxState.editorState !== null && textBoxState.box.i === el.i) {
+        if (textBoxState.box?.i === curBox.i && textBoxState.editorState !== null) {
             setEditorState(textBoxState.editorState)
+            setTextColor(textBoxState.textColor)
+            setTextOpacity(textBoxState.textOpacity)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [textBoxState])
@@ -26,7 +35,7 @@ function TextBox({ el }) {
         setLayout((prev) => {
             const newLayout = [...prev]
             newLayout.forEach((item) => {
-                if (item.i === el.i) {
+                if (item.i === curBox.i) {
                     item.static = type === 'static' ? true : false
                 }
             })
@@ -34,14 +43,41 @@ function TextBox({ el }) {
         })
     }
 
-    const focus = () => editorRef.current.focus()
+    const focus = () => {
+        editorRef.current.focus()
+        setTextBoxState((prev) => {
+            const newState = {
+                ...prev,
+                box: curBox,
+                editorState,
+                isFocus: true,
+            }
+            return newState
+        })
+        setImageBoxState((prev) => {
+            const newState = {
+                ...prev,
+                selectFile: {
+                    ...prev.selectFile,
+                },
+                isFocus: false,
+            }
+            return newState
+        })
+        setTextColor((prev) => prev)
+    }
 
     const onChangeEditorState = (editorState) => {
         setEditorState(editorState)
-        setTextBoxState({
-            box: el,
-            editorState,
-            changeStyles: onChangeStyles,
+        setTextBoxState((prev) => {
+            const newState = {
+                ...prev,
+                box: curBox,
+                editorState,
+                textColor: textColor,
+                changeStyles: onChangeStyles,
+            }
+            return newState
         })
     }
 
@@ -55,7 +91,7 @@ function TextBox({ el }) {
     }
 
     const mapKeyToEditorCommand = (e) => {
-        if (e.keyCode === 9 /* TAB */) {
+        if (e.keyCode === 9) {
             const newEditorState = RichUtils.onTab(e, editorState, 4)
             if (newEditorState !== editorState) {
                 this.onChange(newEditorState)
@@ -84,10 +120,6 @@ function TextBox({ el }) {
 
     let editTorClasses = cx('editor-wrapper', {
         [styles['editor-hide-placeholder']]: placeholder,
-        [styles['editor-text-align--left']]: customStyles.textAlignment.textAlignLeft,
-        [styles['editor-text-align--center']]: customStyles.textAlignment.textAlignCenter,
-        [styles['editor-text-align--right']]: customStyles.textAlignment.textAlignRight,
-        [styles['editor-text-align--justify']]: customStyles.textAlignment.textAlignJustify,
     })
 
     useEffect(() => {
@@ -101,37 +133,39 @@ function TextBox({ el }) {
 
     const styleMap = {
         ...styleList.TYPE_FONT_SIZE,
+        ...styleList.TYPE_TEXT_ALIGN,
         ...styleList.TYPE_FONT_FAMILY,
     }
 
     useEffect(() => {
-        console.log(styleList.TYPE_FONT_FAMILY)
-        console.log(customStyles)
         if (customStyles.styleType.typeName !== '') {
-            const selection = editorState.getSelection()
-            const currentStyle = editorState.getCurrentInlineStyle()
+            if (textBoxState.box?.i === curBox.i) {
+                if (customStyles.styleType.styleNameConstant === 'TYPE_TEXT_ALIGN') {
+                    setTextAlign(customStyles.styleType.typeName)
+                } else {
+                    const selection = editorState.getSelection()
+                    const currentStyle = editorState.getCurrentInlineStyle()
 
-            // Let's just allow one color at a time. Turn off all active colors.
-            const nextContentState = Object.keys(styleList[customStyles.styleType.styleNameConstant]).reduce(
-                (contentState, type) => {
-                    return Modifier.removeInlineStyle(contentState, selection, type)
-                },
-                editorState.getCurrentContent(),
-            )
+                    const nextContentState = Object.keys(styleList[customStyles.styleType.styleNameConstant]).reduce(
+                        (contentState, type) => {
+                            return Modifier.removeInlineStyle(contentState, selection, type)
+                        },
+                        editorState.getCurrentContent(),
+                    )
 
-            let nextEditorState = EditorState.push(editorState, nextContentState, 'change-inline-style')
-            // Unset style override for current color.
-            if (selection.isCollapsed()) {
-                nextEditorState = currentStyle.reduce((state, type) => {
-                    return RichUtils.toggleInlineStyle(state, type)
-                }, nextEditorState)
+                    let nextEditorState = EditorState.push(editorState, nextContentState, 'change-inline-style')
+                    if (selection.isCollapsed()) {
+                        nextEditorState = currentStyle.reduce((state, type) => {
+                            return RichUtils.toggleInlineStyle(state, type)
+                        }, nextEditorState)
+                    }
+
+                    if (!currentStyle.has(customStyles.styleType.typeName)) {
+                        nextEditorState = RichUtils.toggleInlineStyle(nextEditorState, customStyles.styleType.typeName)
+                    }
+                    onChangeEditorState(nextEditorState)
+                }
             }
-
-            // If the color is being toggled on, apply it.
-            if (!currentStyle.has(customStyles.styleType.typeName)) {
-                nextEditorState = RichUtils.toggleInlineStyle(nextEditorState, customStyles.styleType.typeName)
-            }
-            onChangeEditorState(nextEditorState)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [customStyles])
@@ -144,15 +178,18 @@ function TextBox({ el }) {
                 onToggleStaticMode(e, 'static')
             }}
             onBlur={(e) => onToggleStaticMode(e, 'non-static')}
+            style={{ color: textColor, opacity: `${textOpacity}%` }}
         >
             <Editor
+                editorKey={curBox.i}
                 customStyleMap={styleMap}
                 blockStyleFn={getBlockStyle}
                 editorState={editorState}
                 handleKeyCommand={handleKeyCommand}
                 keyBindingFn={mapKeyToEditorCommand}
+                textAlignment={textAlign}
                 placeholder="Your word"
-                ref={editorRef}
+                editorRef={editorRef}
                 onChange={onChangeEditorState}
             />
         </div>

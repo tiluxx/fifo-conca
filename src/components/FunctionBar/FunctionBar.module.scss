@@ -3,3 +3,52 @@
     line-height: 1.2rem;
     font-weight: 500;
 }
+
+.swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+    float: right;
+    cursor: pointer;
+}
+  
+.popover {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    width: -moz-fit-content;
+    width: fit-content;
+    border-radius: 9px;
+
+    & >.color-picker {
+        border-radius: 10px;
+    }
+
+    & >.color-input {
+        display: block;
+        box-sizing: border-box;
+        margin: 0;
+        margin-top: 12px;
+        padding: 6px;
+        width: 90px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background: none;
+        outline: none;
+        -webkit-tap-highlight-color: transparent;
+        font-family: 'Public Sans', sans-serif;
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+        letter-spacing: inherit;
+        color: currentColor;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    & > .color-input:focus {
+        outline: none;
+    }
+}
