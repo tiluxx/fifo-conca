@@ -1,30 +1,40 @@
-import { useState, useEffect, useRef, useContext } from 'react'
+import { memo, useState, useEffect, useRef, useContext } from 'react'
 import classNames from 'classnames/bind'
 import ImageUploading from 'react-images-uploading'
 import Card from '@mui/joy/Card'
 import CardCover from '@mui/joy/CardCover'
 import Button from '@mui/joy/Button'
-import { WorkspaceActionContext } from '~/pages/Workspace'
+import { WorkspaceActionContext, saveToLS } from '~/pages/Workspace'
 import ModalCropper from '~/pages/components/ModalCropper'
 import styles from './ImageBox.module.scss'
 
 const cx = classNames.bind(styles)
 
-function ImageBox({ el }) {
-    const { imageBoxState, setImageBoxState, setTextBoxState, onRemoveItem, setLayout } =
+const ImageBox = memo(function ImageBox({ el }) {
+    const { imageBoxState, setImageBoxState, setBtnBoxState, setTextBoxState, setLayouts } =
         useContext(WorkspaceActionContext)
-    const [curBox, setCurBox] = useState(el)
-    const [imgSrc, setImg] = useState('')
-    const [imageOpacity, setImageOpacity] = useState(100)
+    const [curBox, setCurBox] = useState(el.box)
+    const [imgSrc, setImg] = useState(el.style?.croppedImageUrl)
+    const [imageOpacity, setImageOpacity] = useState(el.style?.imageOpacity)
 
     const imageRef = useRef()
 
-    // const focus = () => imageRef.component.focus()
-
     useEffect(() => {
         if (imageBoxState.box.i === curBox.i) {
-            console.log(imageBoxState.imageOpacity)
             setImageOpacity(imageBoxState.imageOpacity)
+            setLayouts((prev) => {
+                let curLg = [...prev.lg]
+                curLg = curLg.map((element) => {
+                    const curEl = { ...element }
+                    if (curEl.i === curBox.i) {
+                        curEl.box = { ...imageBoxState.box }
+                        curEl.style.imageOpacity = imageBoxState.imageOpacity
+                    }
+                    return curEl
+                })
+                saveToLS('layouts', curLg)
+                return { lg: curLg }
+            })
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [imageBoxState])
@@ -32,6 +42,19 @@ function ImageBox({ el }) {
     useEffect(() => {
         if (imageBoxState.box.i === curBox.i && imageBoxState.croppedImageUrl !== '') {
             setImg(imageBoxState.croppedImageUrl)
+            setLayouts((prev) => {
+                let curLg = [...prev.lg]
+                curLg = curLg.map((element) => {
+                    const curEl = { ...element }
+                    if (curEl.box.i === curBox.i) {
+                        curEl.box = { ...imageBoxState.box }
+                        curEl.style.croppedImageUrl = imageBoxState.croppedImageUrl
+                    }
+                    return curEl
+                })
+                saveToLS('layouts', curLg)
+                return { lg: curLg }
+            })
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [imageBoxState, imageBoxState.croppedImageUrl])
@@ -46,6 +69,7 @@ function ImageBox({ el }) {
                     file: imageList[0].data_url,
                     isHavingFile: true,
                 },
+                isFocus: true,
             }
             return newState
         })
@@ -64,6 +88,13 @@ function ImageBox({ el }) {
                     isHavingFile: false,
                 },
                 isFocus: true,
+            }
+            return newState
+        })
+        setBtnBoxState((prev) => {
+            const newState = {
+                ...prev,
+                isFocus: false,
             }
             return newState
         })
@@ -104,9 +135,9 @@ function ImageBox({ el }) {
                     </ImageUploading>
                 )}
             </div>
-            <ModalCropper el={el} />
+            <ModalCropper el={el.box} />
         </div>
     )
-}
+})
 
 export default ImageBox

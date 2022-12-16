@@ -1,1 +1,1 @@
-export { default, WorkspaceActionContext } from './Workspace'
+export { default, WorkspaceActionContext, saveToLS } from './Workspace'

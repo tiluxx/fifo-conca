@@ -11,19 +11,19 @@ fontListName.forEach((font) => {
 const styleList = {
     TYPE_FONT_SIZE: {
         TITLE: {
-            fontSize: '4rem',
-            lineHeight: '40px',
+            fontSize: '6.5rem',
+            lineHeight: '6.5rem',
         },
         SUB_TITLE: {
-            fontSize: '3.2rem',
-            lineHeight: '32px',
+            fontSize: '4.2rem',
+            lineHeight: '4.2rem',
         },
         HEADING: {
-            fontSize: '2.3rem',
+            fontSize: '2.8rem',
             lineHeight: '23px',
         },
         SUB_HEADING: {
-            fontSize: '1.7rem',
+            fontSize: '2.2rem',
             lineHeight: '17px',
         },
         CONTENT: {

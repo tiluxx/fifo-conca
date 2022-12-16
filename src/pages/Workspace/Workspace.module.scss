@@ -3,8 +3,42 @@
 }
 
 .art-board-container {
+    position: relative;
+}
+
+.art-board {
     width: 100%;
     min-height: 100vh;
-    background-color: #fff;
+    background-color: transparent;
     box-shadow: 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 3px 1px -2px rgb(0 0 0 / 12%), 0px 1px 5px 0px rgb(0 0 0 / 20%);
+}
+.art-board-background-wrapper,
+.footer-wrapper {
+    position: absolute;
+    width: 100%;
+}
+
+.art-board-background {
+    background-position: center center;
+    background-size: cover;
+    width: 100%;
+    -webkit-transition: opacity 255ms;
+    transition: opacity 255ms;
+}
+
+.art-board-background--cover {
+    height: -webkit-calc(100vh - 64px);
+    height: calc(100vh - 64px);
+}
+
+.art-board-background--banner {
+    height: 430px;
+}
+
+.art-board-background--small-banner {
+    height: 340px;
+}
+
+.footer-wrapper {
+    bottom: 0;
 }

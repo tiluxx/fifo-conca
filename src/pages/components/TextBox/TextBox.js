@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef, useContext } from 'react'
+import { memo, useState, useEffect, useRef, useContext } from 'react'
 import classNames from 'classnames/bind'
+import { constantCase } from 'change-case'
 import { Editor, EditorState, RichUtils, Modifier, getDefaultKeyBinding } from 'draft-js'
-import { WorkspaceActionContext } from '~/pages/Workspace'
+import { WorkspaceActionContext, saveToLS } from '~/pages/Workspace'
 import styles from './TextBox.module.scss'
 import styleList from './styleList'
 import 'draft-js/dist/Draft.css'
@@ -9,23 +10,58 @@ import './TextBox.css'
 
 const cx = classNames.bind(styles)
 
-function TextBox({ id, el }) {
-    const { textBoxState, setTextBoxState, setImageBoxState, customStyles, setLayout } =
-        useContext(WorkspaceActionContext)
+const TextBox = memo(function TextBox({ id, el }) {
+    const {
+        setLayouts,
+        textBoxState,
+        setTextBoxState,
+        setBtnBoxState,
+        setImageBoxState,
+        customStyles,
+        setLayout,
+        globalStyles,
+    } = useContext(WorkspaceActionContext)
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty())
-    const [curBox, setCurBox] = useState(el)
+    const [curBox, setCurBox] = useState(el.box)
     const [placeholder, setPlaceholder] = useState(false)
-    const [textColor, setTextColor] = useState(textBoxState.textColor)
-    const [textOpacity, setTextOpacity] = useState(100)
-    const [textAlign, setTextAlign] = useState('left')
-
-    const editorRef = useRef()
+    const [textColor, setTextColor] = useState(el.style?.textColor)
+    const [textOpacity, setTextOpacity] = useState(el.style?.textOpacity)
+    const [textAlign, setTextAlign] = useState(el.style?.textAlign)
+    const editorRef = useRef(editorState)
 
     useEffect(() => {
-        if (textBoxState.box?.i === curBox.i && textBoxState.editorState !== null) {
+        if (textBoxState && textBoxState.box.i === curBox.i && textBoxState.editorState !== null) {
             setEditorState(textBoxState.editorState)
-            setTextColor(textBoxState.textColor)
-            setTextOpacity(textBoxState.textOpacity)
+            if (textBoxState.textColor !== textColor) {
+                setTextColor(textBoxState.textColor)
+                setLayouts((prev) => {
+                    let curLg = [...prev.lg]
+                    curLg = curLg.map((element) => {
+                        const curEl = { ...element }
+                        if (curEl.box.i === curBox.i) {
+                            curEl.style.textColor = textBoxState.textColor
+                        }
+                        return curEl
+                    })
+                    saveToLS('layouts', curLg)
+                    return { lg: curLg }
+                })
+            }
+            if (textBoxState.textOpacity !== textOpacity) {
+                setTextOpacity(textBoxState.textOpacity)
+                setLayouts((prev) => {
+                    let curLg = [...prev.lg]
+                    curLg = curLg.map((element) => {
+                        const curEl = { ...element }
+                        if (curEl.box.i === curBox.i) {
+                            curEl.style.textOpacity = textBoxState.textOpacity
+                        }
+                        return curEl
+                    })
+                    saveToLS('layouts', curLg)
+                    return { lg: curLg }
+                })
+            }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [textBoxState])
@@ -64,6 +100,13 @@ function TextBox({ id, el }) {
             }
             return newState
         })
+        setBtnBoxState((prev) => {
+            const newState = {
+                ...prev,
+                isFocus: false,
+            }
+            return newState
+        })
         setTextColor((prev) => prev)
     }
 
@@ -78,6 +121,19 @@ function TextBox({ id, el }) {
                 changeStyles: onChangeStyles,
             }
             return newState
+        })
+        setLayouts((prev) => {
+            let curLg = [...prev.lg]
+            curLg = curLg.map((element) => {
+                const curEl = { ...element }
+                if (curEl.box.i === curBox.i) {
+                    curEl.style.editorState = editorState
+                    curEl.style.content = editorState.getCurrentContent().getPlainText()
+                }
+                return curEl
+            })
+            saveToLS('layouts', curLg)
+            return { lg: curLg }
         })
     }
 
@@ -142,6 +198,18 @@ function TextBox({ id, el }) {
             if (textBoxState.box?.i === curBox.i) {
                 if (customStyles.styleType.styleNameConstant === 'TYPE_TEXT_ALIGN') {
                     setTextAlign(customStyles.styleType.typeName)
+                    setLayouts((prev) => {
+                        let curLg = [...prev.lg]
+                        curLg = curLg.map((element) => {
+                            const curEl = { ...element }
+                            if (curEl.box.i === curBox.i) {
+                                curEl.style.textAlign = customStyles.styleType.typeName
+                            }
+                            return curEl
+                        })
+                        saveToLS('layouts', curLg)
+                        return { lg: curLg }
+                    })
                 } else {
                     const selection = editorState.getSelection()
                     const currentStyle = editorState.getCurrentInlineStyle()
@@ -163,12 +231,51 @@ function TextBox({ id, el }) {
                     if (!currentStyle.has(customStyles.styleType.typeName)) {
                         nextEditorState = RichUtils.toggleInlineStyle(nextEditorState, customStyles.styleType.typeName)
                     }
+                    setLayouts((prev) => {
+                        let curLg = [...prev.lg]
+                        curLg = curLg.map((element) => {
+                            const curEl = { ...element }
+                            if (curEl.box.i === curBox.i) {
+                                if (customStyles.styleType.styleNameConstant === 'TYPE_FONT_FAMILY') {
+                                    curEl.style.fontFamily = customStyles.styleType.typeName
+                                } else {
+                                    curEl.style.fontSize = styleMap[customStyles.styleType.typeName]['fontSize']
+                                    curEl.style.lineHeight = styleMap[customStyles.styleType.typeName]['lineHeight']
+                                }
+                            }
+                            return curEl
+                        })
+                        saveToLS('layouts', curLg)
+                        return { lg: curLg }
+                    })
                     onChangeEditorState(nextEditorState)
                 }
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [customStyles])
+
+    useEffect(() => {
+        const selection = editorState.getSelection()
+        const currentStyle = editorState.getCurrentInlineStyle()
+
+        const nextContentState = Object.keys(styleList['TYPE_FONT_FAMILY']).reduce((contentState, type) => {
+            return Modifier.removeInlineStyle(contentState, selection, type)
+        }, editorState.getCurrentContent())
+
+        let nextEditorState = EditorState.push(editorState, nextContentState, 'change-inline-style')
+        if (selection.isCollapsed()) {
+            nextEditorState = currentStyle.reduce((state, type) => {
+                return RichUtils.toggleInlineStyle(state, type)
+            }, nextEditorState)
+        }
+
+        if (!currentStyle.has(constantCase(globalStyles.fontFamily))) {
+            nextEditorState = RichUtils.toggleInlineStyle(nextEditorState, constantCase(globalStyles.fontFamily))
+        }
+        onChangeEditorState(nextEditorState)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [globalStyles.fontFamily])
 
     return (
         <div
@@ -177,7 +284,9 @@ function TextBox({ id, el }) {
                 focus()
                 onToggleStaticMode(e, 'static')
             }}
-            onBlur={(e) => onToggleStaticMode(e, 'non-static')}
+            onBlur={(e) => {
+                onToggleStaticMode(e, 'non-static')
+            }}
             style={{ color: textColor, opacity: `${textOpacity}%` }}
         >
             <Editor
@@ -194,6 +303,6 @@ function TextBox({ id, el }) {
             />
         </div>
     )
-}
+})
 
 export default TextBox

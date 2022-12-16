@@ -10,7 +10,6 @@
     align-items: center;
     justify-content: center;
     height: 70px;
-    background-color: rgb(231, 231, 231);
     color: rgba(10,71,61,1.0000000000);
     border-radius: 10px;
 }
@@ -31,14 +30,14 @@
     }
 
     &.f-elegant {
-        font-family: 'Playfair Display', serif;
+        font-family: 'Pandyra', serif;
     }
 
     &.f-luxury {
-        font-family: 'Playfair Display', serif;
+        font-family: 'Brand', serif;
     }
 
     &.f-hand-writing {
-        font-family: 'Playfair Display', serif;
+        font-family: 'Natural', sans-serif;
     }
 }

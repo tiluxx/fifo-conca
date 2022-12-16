@@ -1,0 +1,14 @@
+@font-face {
+    font-family: 'Brand';
+    src: url('./Brand.ttf');
+}
+
+@font-face {
+    font-family: 'Natural';
+    src: url('./Natural.ttf');
+}
+
+@font-face {
+    font-family: 'Pandyra';
+    src: url('./Pandyra.ttf');
+}

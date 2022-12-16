@@ -1,0 +1,68 @@
+.wrapper {
+    padding: 50px 40px;
+    width: 100%;
+    color: var(--snow);
+}
+
+.container {
+    display: 'flex';
+    justify-content: 'space-between';
+    align-items: 'center';
+    font-weight: 'bold',
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.logo-img {
+    width: 25%;
+}
+
+.info-wrapper {
+    width: 100%;
+}
+
+.info-contact {
+    margin-bottom: 10px;
+}
+
+.contact-title {
+    margin-bottom: 10px;
+    font-size: 2rem;
+    line-height: 2rem;
+    font-weight: 600;
+}
+
+.contact-detail {
+    font-size: 1.4rem;
+    line-height: 1.6rem;
+    font-weight: 400;
+}
+
+.team-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.my-team {
+    font-size: 1.4rem;
+    line-height: 1.6rem;
+    font-weight: 300;
+}
+
+// Responsive
+/* Mobile */
+@media (min-width: 0) and (max-width: 599px) {
+    .logo {
+        display: flex;
+        justify-content: center;
+    }
+
+    .info-social {
+        justify-content: center;
+    }
+}

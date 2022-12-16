@@ -20,9 +20,13 @@ const fontList = {
             'Comfortaa',
         ],
     },
+    custom: {
+        families: ['Brand', 'Natural', 'Pandyra'],
+        urls: ['./CustomFonts/CustomFonts.css'],
+    },
 }
 
-const fontListName = [...fontList.google.families]
+const fontListName = [...fontList.google.families, ...fontList.custom.families]
 
 export default fontList
 export { fontListName }

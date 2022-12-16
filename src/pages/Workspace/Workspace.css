@@ -111,7 +111,6 @@
     transform: rotate(45deg);
 }
 
-
 .react-grid-item.resizing {
     z-index: 1;
     will-change: width, height;

@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useContext } from 'react'
 import { constantCase } from 'change-case'
+import ImageUploading from 'react-images-uploading'
 import { HexColorPicker, HexColorInput } from 'react-colorful'
 import classNames from 'classnames/bind'
 import Card from '@mui/joy/Card'
@@ -12,7 +13,9 @@ import ListItem from '@mui/joy/ListItem'
 import ListItemButton from '@mui/joy/ListItemButton'
 import ListItemDecorator from '@mui/joy/ListItemDecorator'
 import ListItemContent from '@mui/joy/ListItemContent'
-import TextField from '@mui/material/TextField'
+import Select, { selectClasses } from '@mui/joy/Select'
+import Option from '@mui/joy/Option'
+// import TextField from '@mui/material/TextField'
 
 // Icon
 import UploadIcon from '@mui/icons-material/Upload'
@@ -26,8 +29,6 @@ import FormatUnderlinedIcon from '@mui/icons-material/FormatUnderlined'
 import FormatSizeIcon from '@mui/icons-material/FormatSize'
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded'
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
-import Select, { selectClasses } from '@mui/joy/Select'
-import Option from '@mui/joy/Option'
 import FormatAlignCenterIcon from '@mui/icons-material/FormatAlignCenter'
 import FormatAlignJustifyIcon from '@mui/icons-material/FormatAlignJustify'
 import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft'
@@ -48,8 +49,8 @@ function FunctionBar() {
     const {
         textBoxState,
         setTextBoxState,
-        layout,
-        setLayout,
+        btnBoxState,
+        setBtnBoxState,
         setCustomStyles,
         imageBoxState,
         setImageBoxState,
@@ -58,14 +59,24 @@ function FunctionBar() {
     const [openElementList, setOpenElementList] = useState(true)
     const [openAppearanceImageList, setOpenAppearanceImageList] = useState(true)
     const [openAppearanceTextBoxList, setOpenAppearanceTextBoxList] = useState(true)
+    const [openAppearanceBtnBoxList, setOpenAppearanceBtnBoxList] = useState(true)
     const [openCharacterList, setOpenCharacterList] = useState(true)
     const [openParagraphList, setOpenParagraphList] = useState(true)
+    const [openPositionList, setOpenPositionList] = useState(true)
     const [openColorPopover, setOpenColorPopover] = useState(false)
+    const [openBtnTextColorPopover, setBtnTextOpenColorPopover] = useState(false)
+    const [openBtnBgColorPopover, setBtnBgOpenColorPopover] = useState(false)
 
     const colorPickerPopover = useRef()
+    const btnTextColorPickerPopover = useRef()
+    const btnBgColorPickerPopover = useRef()
 
     const close = useCallback(() => setOpenColorPopover(false), [])
+    const closeBtnTextColor = useCallback(() => setBtnTextOpenColorPopover(false), [])
+    const closeBtnBgColor = useCallback(() => setBtnBgOpenColorPopover(false), [])
     useClickOutside(colorPickerPopover, close)
+    useClickOutside(btnTextColorPickerPopover, closeBtnTextColor)
+    useClickOutside(btnBgColorPickerPopover, closeBtnBgColor)
 
     // const onDimensionChange = (e, type) => {
     //     setTextBoxState((prev) => {
@@ -87,15 +98,16 @@ function FunctionBar() {
     //     setLayout(newLayout)
     // }
 
-    const onSelectFile = (e) => {
+    const onChangeFile = (imageList, addUpdateIndex) => {
         setImageBoxState((prev) => {
             const newState = {
                 ...prev,
                 selectFile: {
                     ...prev.selectFile,
-                    file: e.target.files,
+                    file: imageList[0].data_url,
                     isHavingFile: true,
                 },
+                isFocus: true,
             }
             return newState
         })
@@ -108,9 +120,29 @@ function FunctionBar() {
         })
     }
 
+    const onBtnBgColorChange = (color) => {
+        setBtnBoxState((prev) => {
+            const newState = { ...prev, bgColor: color }
+            return newState
+        })
+    }
+
+    const onBtnTextColorChange = (color) => {
+        setBtnBoxState((prev) => {
+            const newState = { ...prev, textColor: color }
+            return newState
+        })
+    }
+
     const handleRearrangeOrder = (e, typeBox, rearrangeType) => {
-        console.log(typeBox)
-        const newState = typeBox === 'textBox' ? { ...textBoxState } : { ...imageBoxState }
+        let newState = {}
+        if (typeBox === 'textBox') {
+            newState = { ...textBoxState }
+        } else if (typeBox === 'imageBox') {
+            newState = { ...imageBoxState }
+        } else {
+            newState = { ...btnBoxState }
+        }
         onRearrangeOrder(newState, rearrangeType)
     }
 
@@ -124,6 +156,13 @@ function FunctionBar() {
     const handleImageOpacityChange = (e, value) => {
         setImageBoxState((prev) => {
             const newState = { ...prev, imageOpacity: Number(value) }
+            return newState
+        })
+    }
+
+    const handleBtnOpacityChange = (e, value) => {
+        setBtnBoxState((prev) => {
+            const newState = { ...prev, btnOpacity: Number(value) }
             return newState
         })
     }
@@ -303,7 +342,7 @@ function FunctionBar() {
             )} */}
 
             {imageBoxState && imageBoxState.isFocus && (
-                <ListItem nested sx={{ mt: 2 }}>
+                <ListItem nested sx={{ mb: '12px' }}>
                     <ListSubheader>
                         <h3 className={cx('section-title')}>Appearance</h3>
                         <IconButton
@@ -347,12 +386,20 @@ function FunctionBar() {
                             }}
                         >
                             <ListItem>
-                                <ListItemButton>
-                                    <ListItemDecorator sx={{ color: 'neutral.500' }}>
-                                        <UploadIcon fontSize="medium" />
-                                    </ListItemDecorator>
-                                    <ListItemContent>Change Image</ListItemContent>
-                                </ListItemButton>
+                                <ImageUploading
+                                    // value={images}
+                                    onChange={onChangeFile}
+                                    dataURLKey="data_url"
+                                >
+                                    {({ onImageUpload, dragProps }) => (
+                                        <ListItemButton onMouseUp={onImageUpload} {...dragProps}>
+                                            <ListItemDecorator sx={{ color: 'neutral.500' }}>
+                                                <UploadIcon fontSize="medium" />
+                                            </ListItemDecorator>
+                                            <ListItemContent>Change image</ListItemContent>
+                                        </ListItemButton>
+                                    )}
+                                </ImageUploading>
                             </ListItem>
                             <ListItem>
                                 <ListItemDecorator sx={{ color: 'neutral.500' }}>
@@ -376,7 +423,7 @@ function FunctionBar() {
 
             {imageBoxState && imageBoxState.isFocus && <Divider />}
             {imageBoxState && imageBoxState.isFocus && (
-                <ListItem nested sx={{ mt: 2 }}>
+                <ListItem nested sx={{ mb: '12px' }}>
                     <ListSubheader>
                         <h3 className={cx('section-title')}>Position</h3>
                         <IconButton
@@ -492,8 +539,273 @@ function FunctionBar() {
                 </ListItem>
             )}
 
+            {btnBoxState && btnBoxState.isFocus && (
+                <ListItem nested sx={{ mb: '12px' }}>
+                    <ListSubheader>
+                        <h3 className={cx('section-title')}>Appearance</h3>
+                        <IconButton
+                            size="sm"
+                            variant="plain"
+                            color="primary"
+                            sx={{ '--IconButton-size': '2.4rem', ml: 'auto' }}
+                            onClick={() => setOpenAppearanceBtnBoxList(!openAppearanceBtnBoxList)}
+                        >
+                            {openAppearanceBtnBoxList ? (
+                                <KeyboardArrowDownRoundedIcon
+                                    fontSize="medium"
+                                    color="primary"
+                                    sx={{
+                                        WebkitTransition: 'transform 250ms cubic-bezier(0,0,0.2,1)',
+                                        transition: 'transform 250ms cubic-bezier(0,0,0.2,1)',
+                                        WebkitTransform: 'rotatez(-180deg)',
+                                        transform: 'rotatez(-180deg)',
+                                    }}
+                                />
+                            ) : (
+                                <KeyboardArrowDownRoundedIcon
+                                    fontSize="medium"
+                                    color="primary"
+                                    sx={{
+                                        WebkitTransition: 'transform 250ms cubic-bezier(0,0,0.2,1)',
+                                        transition: 'transform 250ms cubic-bezier(0,0,0.2,1)',
+                                        WebkitTransform: 'rotatez(0deg)',
+                                        transform: 'rotatez(0deg)',
+                                    }}
+                                />
+                            )}
+                        </IconButton>
+                    </ListSubheader>
+                    {openAppearanceBtnBoxList && (
+                        <List
+                            aria-labelledby="nav-list-tags"
+                            size="sm"
+                            sx={{
+                                '--List-decorator-size': '32px',
+                            }}
+                        >
+                            <ListItem>
+                                <ListItemDecorator sx={{ color: 'neutral.500' }}>
+                                    <OpacityIcon fontSize="medium" />
+                                </ListItemDecorator>
+                                <ListItemContent sx={{ color: 'neutral.500' }}>Opacity</ListItemContent>
+                                <ListItemContent>
+                                    <Slider
+                                        valueLabelDisplay="auto"
+                                        defaultValue={100}
+                                        onChangeCommitted={(e, value) => handleBtnOpacityChange(e, value)}
+                                        min={0}
+                                        max={100}
+                                    />
+                                </ListItemContent>
+                            </ListItem>
+
+                            {/* Bg color */}
+                            <ListItem>
+                                <ListItemDecorator sx={{ color: 'neutral.500' }}>
+                                    <FormatColorFillIcon fontSize="medium" />
+                                </ListItemDecorator>
+                                <ListItemContent sx={{ color: 'neutral.500' }}>Bg color</ListItemContent>
+                                <ListItemContent sx={{ position: 'relative' }}>
+                                    <div
+                                        className={cx('swatch')}
+                                        style={{ backgroundColor: btnBoxState.bgColor }}
+                                        onClick={() => setBtnBgOpenColorPopover(true)}
+                                    />
+
+                                    {openBtnBgColorPopover && (
+                                        <Card
+                                            variant="outlined"
+                                            sx={{
+                                                position: 'absolute',
+                                                right: 0,
+                                                width: '-moz-fit-content',
+                                                // eslint-disable-next-line no-dupe-keys
+                                                width: 'fit-content',
+                                                'z-index': 1,
+                                            }}
+                                        >
+                                            <div className={cx('popover')} ref={btnBgColorPickerPopover}>
+                                                <HexColorPicker
+                                                    className={cx('color-picker')}
+                                                    color={btnBoxState.bgColor}
+                                                    onChange={onBtnBgColorChange}
+                                                />
+                                                <HexColorInput
+                                                    className={cx('color-input')}
+                                                    color={btnBoxState.bgColor}
+                                                    onChange={onBtnBgColorChange}
+                                                />
+                                            </div>
+                                        </Card>
+                                    )}
+                                </ListItemContent>
+                            </ListItem>
+
+                            {/* Text color */}
+                            <ListItem>
+                                <ListItemDecorator sx={{ color: 'neutral.500' }}>
+                                    <FormatColorFillIcon fontSize="medium" />
+                                </ListItemDecorator>
+                                <ListItemContent sx={{ color: 'neutral.500' }}>Text color</ListItemContent>
+                                <ListItemContent sx={{ position: 'relative' }}>
+                                    <div
+                                        className={cx('swatch')}
+                                        style={{ backgroundColor: btnBoxState.textColor }}
+                                        onClick={() => setBtnTextOpenColorPopover(true)}
+                                    />
+
+                                    {openBtnTextColorPopover && (
+                                        <Card
+                                            variant="outlined"
+                                            sx={{
+                                                position: 'absolute',
+                                                right: 0,
+                                                width: '-moz-fit-content',
+                                                // eslint-disable-next-line no-dupe-keys
+                                                width: 'fit-content',
+                                                'z-index': 1,
+                                            }}
+                                        >
+                                            <div className={cx('popover')} ref={btnTextColorPickerPopover}>
+                                                <HexColorPicker
+                                                    className={cx('color-picker')}
+                                                    color={btnBoxState.textColor}
+                                                    onChange={onBtnTextColorChange}
+                                                />
+                                                <HexColorInput
+                                                    className={cx('color-input')}
+                                                    color={btnBoxState.textColor}
+                                                    onChange={onBtnTextColorChange}
+                                                />
+                                            </div>
+                                        </Card>
+                                    )}
+                                </ListItemContent>
+                            </ListItem>
+                        </List>
+                    )}
+                </ListItem>
+            )}
+
+            {btnBoxState && btnBoxState.isFocus && (
+                <ListItem nested sx={{ mb: '12px' }}>
+                    <ListSubheader>
+                        <h3 className={cx('section-title')}>Position</h3>
+                        <IconButton
+                            size="sm"
+                            variant="plain"
+                            color="primary"
+                            sx={{ '--IconButton-size': '2.4rem', ml: 'auto' }}
+                            onClick={() => setOpenParagraphList(!openParagraphList)}
+                        >
+                            {openParagraphList ? (
+                                <KeyboardArrowDownRoundedIcon
+                                    fontSize="medium"
+                                    color="primary"
+                                    sx={{
+                                        WebkitTransition: 'transform 250ms cubic-bezier(0,0,0.2,1)',
+                                        transition: 'transform 250ms cubic-bezier(0,0,0.2,1)',
+                                        WebkitTransform: 'rotatez(-180deg)',
+                                        transform: 'rotatez(-180deg)',
+                                    }}
+                                />
+                            ) : (
+                                <KeyboardArrowDownRoundedIcon
+                                    fontSize="medium"
+                                    color="primary"
+                                    sx={{
+                                        WebkitTransition: 'transform 250ms cubic-bezier(0,0,0.2,1)',
+                                        transition: 'transform 250ms cubic-bezier(0,0,0.2,1)',
+                                        WebkitTransform: 'rotatez(0deg)',
+                                        transform: 'rotatez(0deg)',
+                                    }}
+                                />
+                            )}
+                        </IconButton>
+                    </ListSubheader>
+                    {openParagraphList && (
+                        <List
+                            aria-labelledby="nav-list-tags"
+                            size="sm"
+                            sx={{
+                                '--List-decorator-size': '32px',
+                                flexDirection: 'row',
+                                flexWrap: 'wrap',
+                            }}
+                        >
+                            <ListItem
+                                sx={{
+                                    '--List-decorator-size': '32px',
+                                    width: '50%',
+                                }}
+                            >
+                                <ListItemButton
+                                    sx={{ textAlign: 'center', alignItems: 'center' }}
+                                    onMouseUp={(e) => handleRearrangeOrder(e, 'btnBox', 'forward')}
+                                >
+                                    <ListItemDecorator sx={{ color: 'neutral.500' }}>
+                                        <KeyboardArrowUpIcon fontSize="medium" />
+                                    </ListItemDecorator>
+                                    <ListItemContent sx={{ color: 'neutral.500' }}>Forward</ListItemContent>
+                                </ListItemButton>
+                            </ListItem>
+                            <ListItem
+                                sx={{
+                                    '--List-decorator-size': '32px',
+                                    width: '50%',
+                                }}
+                            >
+                                <ListItemButton
+                                    sx={{ textAlign: 'center', alignItems: 'center' }}
+                                    onMouseUp={(e) => handleRearrangeOrder(e, 'btnBox', 'backward')}
+                                >
+                                    <ListItemDecorator sx={{ color: 'neutral.500', rotate: '180deg' }}>
+                                        <KeyboardArrowUpIcon fontSize="medium" />
+                                    </ListItemDecorator>
+                                    <ListItemContent sx={{ color: 'neutral.500' }}>Backward</ListItemContent>
+                                </ListItemButton>
+                            </ListItem>
+                            <ListItem
+                                sx={{
+                                    '--List-decorator-size': '32px',
+                                    width: '50%',
+                                }}
+                            >
+                                <ListItemButton
+                                    sx={{ textAlign: 'center', alignItems: 'center' }}
+                                    onMouseUp={(e) => handleRearrangeOrder(e, 'btnBox', 'to-front')}
+                                >
+                                    <ListItemDecorator
+                                        sx={{ color: 'neutral.500', rotate: '-90deg', display: 'unset' }}
+                                    >
+                                        <LastPageIcon fontSize="medium" />
+                                    </ListItemDecorator>
+                                    <ListItemContent sx={{ color: 'neutral.500' }}>To front</ListItemContent>
+                                </ListItemButton>
+                            </ListItem>
+                            <ListItem
+                                sx={{
+                                    '--List-decorator-size': '32px',
+                                    width: '50%',
+                                }}
+                            >
+                                <ListItemButton
+                                    sx={{ textAlign: 'center', alignItems: 'center' }}
+                                    onMouseUp={(e) => handleRearrangeOrder(e, 'btnBox', 'to-back')}
+                                >
+                                    <ListItemDecorator sx={{ color: 'neutral.500', rotate: '180deg' }}>
+                                        <KeyboardArrowUpIcon fontSize="medium" />
+                                    </ListItemDecorator>
+                                    <ListItemContent sx={{ color: 'neutral.500' }}>To back</ListItemContent>
+                                </ListItemButton>
+                            </ListItem>
+                        </List>
+                    )}
+                </ListItem>
+            )}
+
             {textBoxState && textBoxState.isFocus && (
-                <ListItem nested sx={{ mt: 2 }}>
+                <ListItem nested sx={{ mb: '12px' }}>
                     <ListSubheader>
                         <h3 className={cx('section-title')}>Appearance</h3>
                         <IconButton
@@ -540,7 +852,7 @@ function FunctionBar() {
                                 <ListItemDecorator sx={{ color: 'neutral.500' }}>
                                     <OpacityIcon fontSize="medium" />
                                 </ListItemDecorator>
-                                <ListItemContent>Opacity</ListItemContent>
+                                <ListItemContent sx={{ color: 'neutral.500' }}>Opacity</ListItemContent>
                                 <ListItemContent>
                                     <Slider
                                         valueLabelDisplay="auto"
@@ -555,7 +867,7 @@ function FunctionBar() {
                                 <ListItemDecorator sx={{ color: 'neutral.500' }}>
                                     <FormatColorFillIcon fontSize="medium" />
                                 </ListItemDecorator>
-                                <ListItemContent>Color</ListItemContent>
+                                <ListItemContent sx={{ color: 'neutral.500' }}>Color</ListItemContent>
                                 <ListItemContent sx={{ position: 'relative' }}>
                                     <div
                                         className={cx('swatch')}
@@ -598,7 +910,7 @@ function FunctionBar() {
 
             {textBoxState && textBoxState.isFocus && <Divider />}
             {textBoxState && textBoxState.isFocus && (
-                <ListItem nested sx={{ mt: 2 }}>
+                <ListItem nested sx={{ mb: '12px' }}>
                     <ListSubheader>
                         <h3 className={cx('section-title')}>Character</h3>
                         <IconButton
@@ -645,33 +957,42 @@ function FunctionBar() {
                                 <ListItemDecorator sx={{ color: 'neutral.500' }}>
                                     <FontDownloadIcon fontSize="medium" />
                                 </ListItemDecorator>
-                                <ListItemContent>
-                                    <Select
-                                        placeholder="Select a font"
-                                        indicator={<KeyboardArrowDown />}
-                                        sx={{
-                                            width: 240,
-                                            [`& .${selectClasses.indicator}`]: {
-                                                transition: '0.2s',
-                                                [`&.${selectClasses.expanded}`]: {
-                                                    transform: 'rotate(-180deg)',
-                                                },
+                                {/* <ListItemContent> */}
+                                <Select
+                                    placeholder="Select a font"
+                                    indicator={<KeyboardArrowDown />}
+                                    sx={{
+                                        width: 240,
+                                        [`& .${selectClasses.indicator}`]: {
+                                            transition: '0.2s',
+                                            [`&.${selectClasses.expanded}`]: {
+                                                transform: 'rotate(-180deg)',
                                             },
+                                        },
+                                    }}
+                                >
+                                    <List
+                                        sx={{
+                                            maxHeight: 200,
+                                            overflow: 'auto',
                                         }}
                                     >
                                         {fontListName.map((font) => (
-                                            <Option
-                                                key={font}
-                                                value={font}
-                                                onMouseUp={(e) =>
-                                                    handleStylesChange(e, 'typeFontFamily', constantCase(font))
-                                                }
-                                            >
-                                                {font}
-                                            </Option>
+                                            <ListItem key={font}>
+                                                <Option
+                                                    key={font}
+                                                    value={font}
+                                                    onMouseUp={(e) =>
+                                                        handleStylesChange(e, 'typeFontFamily', constantCase(font))
+                                                    }
+                                                >
+                                                    {font}
+                                                </Option>
+                                            </ListItem>
                                         ))}
-                                    </Select>
-                                </ListItemContent>
+                                    </List>
+                                </Select>
+                                {/* </ListItemContent> */}
                             </ListItem>
                             <ListItem>
                                 <ListItemDecorator sx={{ color: 'neutral.500' }}>
@@ -785,7 +1106,7 @@ function FunctionBar() {
 
             {textBoxState && textBoxState.isFocus && <Divider />}
             {textBoxState && textBoxState.isFocus && (
-                <ListItem nested sx={{ mt: 2 }}>
+                <ListItem nested sx={{ mb: '12px' }}>
                     <ListSubheader>
                         <h3 className={cx('section-title')}>Paragraph</h3>
                         <IconButton
@@ -897,7 +1218,7 @@ function FunctionBar() {
 
             {textBoxState && textBoxState.isFocus && <Divider />}
             {textBoxState && textBoxState.isFocus && (
-                <ListItem nested sx={{ mt: 2 }}>
+                <ListItem nested sx={{ mb: '12px' }}>
                     <ListSubheader>
                         <h3 className={cx('section-title')}>Position</h3>
                         <IconButton
@@ -905,9 +1226,9 @@ function FunctionBar() {
                             variant="plain"
                             color="primary"
                             sx={{ '--IconButton-size': '2.4rem', ml: 'auto' }}
-                            onClick={() => setOpenParagraphList(!openParagraphList)}
+                            onClick={() => setOpenPositionList(!openPositionList)}
                         >
-                            {openParagraphList ? (
+                            {openPositionList ? (
                                 <KeyboardArrowDownRoundedIcon
                                     fontSize="medium"
                                     color="primary"
@@ -932,7 +1253,7 @@ function FunctionBar() {
                             )}
                         </IconButton>
                     </ListSubheader>
-                    {openParagraphList && (
+                    {openPositionList && (
                         <List
                             aria-labelledby="nav-list-tags"
                             size="sm"
