@@ -2,7 +2,7 @@ import { Fragment, useState, useEffect, useRef, useContext } from 'react'
 import classNames from 'classnames/bind'
 import ReactCrop, { centerCrop, makeAspectCrop, Crop } from 'react-image-crop'
 import Button from '@mui/joy/Button'
-import TextField from '@mui/material/TextField'
+import TextField from '@mui/joy/TextField'
 import Modal from '@mui/joy/Modal'
 import ModalDialog from '@mui/joy/ModalDialog'
 import Stack from '@mui/joy/Stack'
@@ -32,7 +32,7 @@ function centerAspectCrop(mediaWidth, mediaHeight, aspect) {
 const TO_RADIANS = Math.PI / 180
 
 function ModalCropper({ el }) {
-    const { imageBoxState, setImageBoxState } = useContext(WorkspaceActionContext)
+    const { imageBoxState, setImageBoxState, globalStyles, setGlobalStyles } = useContext(WorkspaceActionContext)
     const [open, setOpen] = useState(false)
     const [imgSrc, setImgSrc] = useState('')
     const imgRef = useRef(null)
@@ -43,7 +43,7 @@ function ModalCropper({ el }) {
     const [aspect, setAspect] = useState(undefined)
 
     useEffect(() => {
-        if (imageBoxState.box.i === el.i && imageBoxState.selectFile.isHavingFile) {
+        if (el && imageBoxState.box.i === el.i && imageBoxState.selectFile.isHavingFile) {
             setOpen(true)
             const targetFile = imageBoxState.selectFile.file
             if (targetFile) {
@@ -53,6 +53,18 @@ function ModalCropper({ el }) {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [imageBoxState])
+
+    useEffect(() => {
+        if (globalStyles.backgroundImage.isFocus) {
+            setOpen(true)
+            const targetFile = globalStyles.backgroundImage.file
+            if (targetFile) {
+                setCrop(undefined)
+                setImgSrc(targetFile || '')
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [globalStyles.backgroundImage.file])
 
     function onImageLoad(e) {
         if (aspect) {
@@ -67,15 +79,34 @@ function ModalCropper({ el }) {
 
     const makeClientCrop = async (crop) => {
         if (imgRef.current && crop.width && crop.height) {
-            const croppedImageUrl = await getCroppedImg(imgRef.current, crop, `${el.i}.jpeg`)
-            setImageBoxState({
-                box: el,
-                croppedImageUrl: croppedImageUrl,
-                selectFile: {
-                    file: [],
-                    isHavingFile: false,
-                },
-            })
+            const imgName = el ? `${el.i}.jpeg` : 'bgImage.jpeg'
+            const croppedImageUrl = await getCroppedImg(imgRef.current, crop, imgName)
+            if (globalStyles.backgroundImage.isFocus || !el) {
+                setGlobalStyles((prev) => {
+                    const newState = {
+                        ...prev,
+                        backgroundImage: {
+                            ...prev.backgroundImage,
+                            croppedImageUrl: croppedImageUrl,
+                            isFocus: false,
+                        },
+                    }
+                    return newState
+                })
+            } else {
+                setImageBoxState((prev) => {
+                    const newState = {
+                        ...prev,
+                        box: el,
+                        croppedImageUrl: croppedImageUrl,
+                        selectFile: {
+                            file: [],
+                            isHavingFile: false,
+                        },
+                    }
+                    return newState
+                })
+            }
         }
     }
 
@@ -130,7 +161,9 @@ function ModalCropper({ el }) {
                     }
                     blob.name = fileName
                     let fileUrl = ''
-                    window.URL.revokeObjectURL(fileUrl)
+                    if (fileUrl) {
+                        URL.revokeObjectURL(fileUrl)
+                    }
                     fileUrl = window.URL.createObjectURL(blob)
                     resolve(fileUrl)
                 },
