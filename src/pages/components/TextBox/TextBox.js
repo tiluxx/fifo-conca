@@ -27,6 +27,9 @@ const TextBox = memo(function TextBox({ id, el }) {
     const [textColor, setTextColor] = useState(el.style?.textColor)
     const [textOpacity, setTextOpacity] = useState(el.style?.textOpacity)
     const [textAlign, setTextAlign] = useState(el.style?.textAlign)
+    const [textFontFamily, setTextFontFamily] = useState(el.style?.fontFamily)
+    const [textFontSize, setTextFontSize] = useState(el.style?.fontSize)
+    const [textLineHeight, setTextLineHeight] = useState(el.style?.lineHeight)
     const editorRef = useRef(editorState)
 
     useEffect(() => {
@@ -287,7 +290,13 @@ const TextBox = memo(function TextBox({ id, el }) {
             onBlur={(e) => {
                 onToggleStaticMode(e, 'non-static')
             }}
-            style={{ color: textColor, opacity: `${textOpacity}%` }}
+            style={{
+                color: textColor,
+                opacity: `${textOpacity}%`,
+                fontSize: textFontSize,
+                lineHeight: textLineHeight,
+                fontFamily: textFontFamily,
+            }}
         >
             <Editor
                 editorKey={curBox.i}

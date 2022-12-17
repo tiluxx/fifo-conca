@@ -163,7 +163,12 @@ function ToolBar() {
         <List size="sm" sx={{ '--List-item-radius': '8px', '--List-gap': '4px' }}>
             <ListItem nested sx={{ marginBottom: '10px' }}>
                 <ListSubheader>
-                    <h3 className={cx('section-title')}>Elements</h3>
+                    <h3
+                        className={cx('section-title')}
+                        style={{ fontSize: '1.2rem', lineHeight: '1.2rem', fontWeight: 500 }}
+                    >
+                        Elements
+                    </h3>
                     <IconButton
                         size="sm"
                         variant="plain"
@@ -234,7 +239,12 @@ function ToolBar() {
             <Divider />
             <ListItem nested sx={{ marginBottom: '10px' }}>
                 <ListSubheader>
-                    <h3 className={cx('section-title')}>Background & Footer</h3>
+                    <h3
+                        className={cx('section-title')}
+                        style={{ fontSize: '1.2rem', lineHeight: '1.2rem', fontWeight: 500 }}
+                    >
+                        Background & Footer
+                    </h3>
                     <IconButton
                         size="sm"
                         variant="plain"
@@ -489,7 +499,12 @@ function ToolBar() {
             <Divider />
             <ListItem nested sx={{ mt: 2, marginBottom: '10px' }}>
                 <ListSubheader>
-                    <h3 className={cx('section-title')}>Styles</h3>
+                    <h3
+                        className={cx('section-title')}
+                        style={{ fontSize: '1.2rem', lineHeight: '1.2rem', fontWeight: 500 }}
+                    >
+                        Styles
+                    </h3>
                     <IconButton
                         size="sm"
                         variant="plain"
@@ -581,7 +596,10 @@ function ToolBar() {
             {/*<Divider />
              <ListItem nested sx={{ mt: 2 }}>
                 <ListSubheader>
-                    <h3 className={cx('section-title')}>Template boxes</h3>
+                    <h3
+                            className={cx('section-title')}
+                            style={{ fontSize: '1.2rem', lineHeight: '1.2rem', fontWeight: 500 }}
+                        >Template boxes</h3>
                     <IconButton
                         size="sm"
                         variant="plain"

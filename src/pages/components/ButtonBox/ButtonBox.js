@@ -152,8 +152,22 @@ function ButtonBox({ el }) {
     }
 
     return (
-        <div className={cx('wrapper')} style={{ opacity: `${btnOpacity}%` }} onMouseUp={(e) => onFocusBtnBox(e)}>
-            <div className={cx('container')}>
+        <div
+            className={cx('wrapper')}
+            style={{ opacity: `${btnOpacity}%`, width: '100%', height: '100%' }}
+            onMouseUp={(e) => onFocusBtnBox(e)}
+        >
+            <div
+                className={cx('container')}
+                style={{
+                    display: 'flex',
+                    width: '100%',
+                    height: '100%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    textAlign: 'center',
+                }}
+            >
                 <Button
                     component="a"
                     href={btnLink}

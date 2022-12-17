@@ -197,7 +197,10 @@ function FunctionBar() {
             {/* {textBoxState && (
                 <ListItem nested>
                     <ListSubheader>
-                        <h3 className={cx('section-title')}>Transform</h3>
+                        <h3
+                            className={cx('section-title')}
+                            style={{ fontSize: '1.2rem', lineHeight: '1.2rem', fontWeight: 500 }}
+                        >Transform</h3>
                         <IconButton
                             size="sm"
                             variant="plain"
@@ -344,7 +347,12 @@ function FunctionBar() {
             {imageBoxState && imageBoxState.isFocus && (
                 <ListItem nested sx={{ mb: '12px' }}>
                     <ListSubheader>
-                        <h3 className={cx('section-title')}>Appearance</h3>
+                        <h3
+                            className={cx('section-title')}
+                            style={{ fontSize: '1.2rem', lineHeight: '1.2rem', fontWeight: 500 }}
+                        >
+                            Appearance
+                        </h3>
                         <IconButton
                             size="sm"
                             variant="plain"
@@ -425,7 +433,12 @@ function FunctionBar() {
             {imageBoxState && imageBoxState.isFocus && (
                 <ListItem nested sx={{ mb: '12px' }}>
                     <ListSubheader>
-                        <h3 className={cx('section-title')}>Position</h3>
+                        <h3
+                            className={cx('section-title')}
+                            style={{ fontSize: '1.2rem', lineHeight: '1.2rem', fontWeight: 500 }}
+                        >
+                            Position
+                        </h3>
                         <IconButton
                             size="sm"
                             variant="plain"
@@ -542,7 +555,12 @@ function FunctionBar() {
             {btnBoxState && btnBoxState.isFocus && (
                 <ListItem nested sx={{ mb: '12px' }}>
                     <ListSubheader>
-                        <h3 className={cx('section-title')}>Appearance</h3>
+                        <h3
+                            className={cx('section-title')}
+                            style={{ fontSize: '1.2rem', lineHeight: '1.2rem', fontWeight: 500 }}
+                        >
+                            Appearance
+                        </h3>
                         <IconButton
                             size="sm"
                             variant="plain"
@@ -608,7 +626,17 @@ function FunctionBar() {
                                 <ListItemContent sx={{ position: 'relative' }}>
                                     <div
                                         className={cx('swatch')}
-                                        style={{ backgroundColor: btnBoxState.bgColor }}
+                                        style={{
+                                            backgroundColor: btnBoxState.bgColor,
+                                            width: '28px',
+                                            height: '28px',
+                                            borderRadius: '8px',
+                                            border: '3px solid #fff',
+                                            boxShadow:
+                                                '0 0 0 1px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(0, 0, 0, 0.1)',
+                                            float: 'right',
+                                            cursor: 'pointer',
+                                        }}
                                         onClick={() => setBtnBgOpenColorPopover(true)}
                                     />
 
@@ -624,10 +652,25 @@ function FunctionBar() {
                                                 'z-index': 1,
                                             }}
                                         >
-                                            <div className={cx('popover')} ref={btnBgColorPickerPopover}>
+                                            <div
+                                                className={cx('popover')}
+                                                style={{
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    alignItems: 'center',
+                                                    padding: '10px',
+                                                    width: '-moz-fit-content',
+                                                    width: 'fit-content',
+                                                    borderRadius: '9px',
+                                                }}
+                                                ref={btnBgColorPickerPopover}
+                                            >
                                                 <HexColorPicker
                                                     className={cx('color-picker')}
                                                     color={btnBoxState.bgColor}
+                                                    style={{
+                                                        borderRadius: '10px',
+                                                    }}
                                                     onChange={onBtnBgColorChange}
                                                 />
                                                 <HexColorInput
@@ -650,7 +693,17 @@ function FunctionBar() {
                                 <ListItemContent sx={{ position: 'relative' }}>
                                     <div
                                         className={cx('swatch')}
-                                        style={{ backgroundColor: btnBoxState.textColor }}
+                                        style={{
+                                            backgroundColor: btnBoxState.textColor,
+                                            width: '28px',
+                                            height: '28px',
+                                            borderRadius: '8px',
+                                            border: '3px solid #fff',
+                                            boxShadow:
+                                                '0 0 0 1px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(0, 0, 0, 0.1)',
+                                            float: 'right',
+                                            cursor: 'pointer',
+                                        }}
                                         onClick={() => setBtnTextOpenColorPopover(true)}
                                     />
 
@@ -666,10 +719,25 @@ function FunctionBar() {
                                                 'z-index': 1,
                                             }}
                                         >
-                                            <div className={cx('popover')} ref={btnTextColorPickerPopover}>
+                                            <div
+                                                className={cx('popover')}
+                                                style={{
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    alignItems: 'center',
+                                                    padding: '10px',
+                                                    width: '-moz-fit-content',
+                                                    width: 'fit-content',
+                                                    borderRadius: '9px',
+                                                }}
+                                                ref={btnTextColorPickerPopover}
+                                            >
                                                 <HexColorPicker
                                                     className={cx('color-picker')}
                                                     color={btnBoxState.textColor}
+                                                    style={{
+                                                        borderRadius: '10px',
+                                                    }}
                                                     onChange={onBtnTextColorChange}
                                                 />
                                                 <HexColorInput
@@ -690,7 +758,12 @@ function FunctionBar() {
             {btnBoxState && btnBoxState.isFocus && (
                 <ListItem nested sx={{ mb: '12px' }}>
                     <ListSubheader>
-                        <h3 className={cx('section-title')}>Position</h3>
+                        <h3
+                            className={cx('section-title')}
+                            style={{ fontSize: '1.2rem', lineHeight: '1.2rem', fontWeight: 500 }}
+                        >
+                            Position
+                        </h3>
                         <IconButton
                             size="sm"
                             variant="plain"
@@ -807,7 +880,12 @@ function FunctionBar() {
             {textBoxState && textBoxState.isFocus && (
                 <ListItem nested sx={{ mb: '12px' }}>
                     <ListSubheader>
-                        <h3 className={cx('section-title')}>Appearance</h3>
+                        <h3
+                            className={cx('section-title')}
+                            style={{ fontSize: '1.2rem', lineHeight: '1.2rem', fontWeight: 500 }}
+                        >
+                            Appearance
+                        </h3>
                         <IconButton
                             size="sm"
                             variant="plain"
@@ -871,7 +949,17 @@ function FunctionBar() {
                                 <ListItemContent sx={{ position: 'relative' }}>
                                     <div
                                         className={cx('swatch')}
-                                        style={{ backgroundColor: textBoxState.textColor }}
+                                        style={{
+                                            backgroundColor: textBoxState.textColor,
+                                            width: '28px',
+                                            height: '28px',
+                                            borderRadius: '8px',
+                                            border: '3px solid #fff',
+                                            boxShadow:
+                                                '0 0 0 1px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(0, 0, 0, 0.1)',
+                                            float: 'right',
+                                            cursor: 'pointer',
+                                        }}
                                         onClick={() => setOpenColorPopover(true)}
                                     />
 
@@ -887,10 +975,25 @@ function FunctionBar() {
                                                 'z-index': 1,
                                             }}
                                         >
-                                            <div className={cx('popover')} ref={colorPickerPopover}>
+                                            <div
+                                                className={cx('popover')}
+                                                style={{
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    alignItems: 'center',
+                                                    padding: '10px',
+                                                    width: '-moz-fit-content',
+                                                    width: 'fit-content',
+                                                    borderRadius: '9px',
+                                                }}
+                                                ref={colorPickerPopover}
+                                            >
                                                 <HexColorPicker
                                                     className={cx('color-picker')}
                                                     color={textBoxState.textColor}
+                                                    style={{
+                                                        borderRadius: '10px',
+                                                    }}
                                                     onChange={onTextColorChange}
                                                 />
                                                 <HexColorInput
@@ -912,7 +1015,12 @@ function FunctionBar() {
             {textBoxState && textBoxState.isFocus && (
                 <ListItem nested sx={{ mb: '12px' }}>
                     <ListSubheader>
-                        <h3 className={cx('section-title')}>Character</h3>
+                        <h3
+                            className={cx('section-title')}
+                            style={{ fontSize: '1.2rem', lineHeight: '1.2rem', fontWeight: 500 }}
+                        >
+                            Character
+                        </h3>
                         <IconButton
                             size="sm"
                             variant="plain"
@@ -1012,12 +1120,12 @@ function FunctionBar() {
                                             },
                                         }}
                                     >
-                                        <Option value="NORMAL" onMouseUp={() => textBoxState.changeStyles(null)}>
+                                        {/* <Option value="NORMAL" onMouseUp={() => textBoxState.changeStyles(null)}>
                                             <ListItemDecorator>
                                                 <FormatClearIcon fontSize="medium" />
                                             </ListItemDecorator>
                                             Normal
-                                        </Option>
+                                        </Option> */}
                                         <Option value="BOLD" onMouseUp={() => textBoxState.changeStyles('BOLD')}>
                                             <ListItemDecorator>
                                                 <FormatBoldIcon fontSize="medium" />
@@ -1108,7 +1216,12 @@ function FunctionBar() {
             {textBoxState && textBoxState.isFocus && (
                 <ListItem nested sx={{ mb: '12px' }}>
                     <ListSubheader>
-                        <h3 className={cx('section-title')}>Paragraph</h3>
+                        <h3
+                            className={cx('section-title')}
+                            style={{ fontSize: '1.2rem', lineHeight: '1.2rem', fontWeight: 500 }}
+                        >
+                            Paragraph
+                        </h3>
                         <IconButton
                             size="sm"
                             variant="plain"
@@ -1220,7 +1333,12 @@ function FunctionBar() {
             {textBoxState && textBoxState.isFocus && (
                 <ListItem nested sx={{ mb: '12px' }}>
                     <ListSubheader>
-                        <h3 className={cx('section-title')}>Position</h3>
+                        <h3
+                            className={cx('section-title')}
+                            style={{ fontSize: '1.2rem', lineHeight: '1.2rem', fontWeight: 500 }}
+                        >
+                            Position
+                        </h3>
                         <IconButton
                             size="sm"
                             variant="plain"

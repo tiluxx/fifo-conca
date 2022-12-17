@@ -108,8 +108,22 @@ const ImageBox = memo(function ImageBox({ el }) {
     }
 
     return (
-        <div className={cx('wrapper')} style={{ opacity: `${imageOpacity}%` }} ref={imageRef}>
-            <div className={cx('container')}>
+        <div
+            className={cx('wrapper')}
+            style={{ opacity: `${imageOpacity}%`, width: '100%', height: '100%' }}
+            ref={imageRef}
+        >
+            <div
+                className={cx('container')}
+                style={{
+                    display: 'flex',
+                    width: '100%',
+                    height: '100%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    textAlign: 'center',
+                }}
+            >
                 {imgSrc !== '' ? (
                     <div style={{ width: '100%', height: '100%' }} onClick={onFocusImage}>
                         <Card
