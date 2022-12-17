@@ -550,7 +550,17 @@ function ToolBar() {
                                 marginBottom: '12px',
                             }}
                         >
-                            <ListItemButton onMouseUp={() => setGlobalStyles('Roboto')}>
+                            <ListItemButton
+                                onMouseUp={() =>
+                                    setGlobalStyles((prev) => {
+                                        const newState = {
+                                            ...prev,
+                                            fontFamily: 'Roboto',
+                                        }
+                                        return newState
+                                    })
+                                }
+                            >
                                 <ListItemContent>
                                     <StyleBox type="Minimalism" font="f-minimalism" />
                                 </ListItemContent>
@@ -561,7 +571,17 @@ function ToolBar() {
                                 marginBottom: '12px',
                             }}
                         >
-                            <ListItemButton onMouseUp={() => setGlobalStyles('Pandyra')}>
+                            <ListItemButton
+                                onMouseUp={() =>
+                                    setGlobalStyles((prev) => {
+                                        const newState = {
+                                            ...prev,
+                                            fontFamily: 'Pandyra',
+                                        }
+                                        return newState
+                                    })
+                                }
+                            >
                                 <ListItemContent>
                                     <StyleBox type="Elegance" font="f-elegant" />
                                 </ListItemContent>
@@ -572,7 +592,17 @@ function ToolBar() {
                                 marginBottom: '12px',
                             }}
                         >
-                            <ListItemButton onMouseUp={() => setGlobalStyles('Brand')}>
+                            <ListItemButton
+                                onMouseUp={() =>
+                                    setGlobalStyles((prev) => {
+                                        const newState = {
+                                            ...prev,
+                                            fontFamily: 'Brand',
+                                        }
+                                        return newState
+                                    })
+                                }
+                            >
                                 <ListItemContent>
                                     <StyleBox type="Luxury" font="f-luxury" />
                                 </ListItemContent>
@@ -583,7 +613,17 @@ function ToolBar() {
                                 marginBottom: '12px',
                             }}
                         >
-                            <ListItemButton onMouseUp={() => setGlobalStyles('Natural')}>
+                            <ListItemButton
+                                onMouseUp={() =>
+                                    setGlobalStyles((prev) => {
+                                        const newState = {
+                                            ...prev,
+                                            fontFamily: 'Natural',
+                                        }
+                                        return newState
+                                    })
+                                }
+                            >
                                 <ListItemContent>
                                     <StyleBox type="Hand writing" font="f-hand-writing" />
                                 </ListItemContent>

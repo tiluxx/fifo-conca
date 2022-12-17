@@ -295,7 +295,7 @@ const TextBox = memo(function TextBox({ id, el }) {
                 opacity: `${textOpacity}%`,
                 fontSize: textFontSize,
                 lineHeight: textLineHeight,
-                fontFamily: textFontFamily,
+                fontFamily: globalStyles.fontFamily || textFontFamily,
                 textAlign: textAlign,
             }}
         >

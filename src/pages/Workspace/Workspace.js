@@ -215,7 +215,6 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
     }
 
     const generateDOM = () => {
-        console.log(layouts)
         return _.map(layouts.lg, function (l) {
             return (
                 <div key={l.box.i} data-grid={l.box}>
