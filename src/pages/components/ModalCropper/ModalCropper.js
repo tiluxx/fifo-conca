@@ -193,6 +193,7 @@ function ModalCropper({ el }) {
                             setOpen(false)
                         }}
                         className={cx('form-wrapper')}
+                        style={{ maxHeight: '100%' }}
                     >
                         <Stack
                             spacing={2}
@@ -200,8 +201,17 @@ function ModalCropper({ el }) {
                                 maxHeight: '100%',
                             }}
                         >
-                            <div className={cx('input-wrapper')}>
-                                <span>Scale</span>
+                            <div
+                                className={cx('input-wrapper')}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '1.2rem',
+                                    height: '1.2rem',
+                                }}
+                            >
+                                <span style={{ marginRight: '4px', color: '#73738c' }}>Scale</span>
                                 <TextField
                                     id="scale-input"
                                     type="number"
@@ -214,7 +224,7 @@ function ModalCropper({ el }) {
                                 />
                             </div>
                             <div className={cx('input-wrapper')}>
-                                <span>Rotate</span>
+                                <span style={{ marginRight: '4px', color: '#73738c' }}>Rotate</span>
                                 <TextField
                                     id="rotate-input"
                                     type="number"
@@ -232,6 +242,12 @@ function ModalCropper({ el }) {
                                 onComplete={(c) => handleCropComplete(c)}
                                 aspect={aspect}
                                 ruleOfThirds
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    maxHeight: '50vh',
+                                }}
                             >
                                 <img
                                     ref={imgRef}

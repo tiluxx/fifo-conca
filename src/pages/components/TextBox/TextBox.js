@@ -296,6 +296,7 @@ const TextBox = memo(function TextBox({ id, el }) {
                 fontSize: textFontSize,
                 lineHeight: textLineHeight,
                 fontFamily: textFontFamily,
+                textAlign: textAlign,
             }}
         >
             <Editor

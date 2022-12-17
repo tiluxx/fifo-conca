@@ -68,6 +68,7 @@ function ModalButtonEditor({ el, name = '', link = '', isOpen = false }) {
                             handleEditButton()
                         }}
                         className={cx('form-wrapper')}
+                        style={{ maxHeight: '100%' }}
                     >
                         <Stack
                             spacing={2}
@@ -75,8 +76,8 @@ function ModalButtonEditor({ el, name = '', link = '', isOpen = false }) {
                                 maxHeight: '100%',
                             }}
                         >
-                            <div className={cx('input-wrapper')}>
-                                <div>Name</div>
+                            <div className={cx('input-wrapper')} style={{ fontSize: '1.2rem', lineHeight: '1.2rem' }}>
+                                <div style={{ marginBottom: '4px', color: '#73738c' }}>Name</div>
                                 <TextField
                                     id="btn-name-input"
                                     type="text"
@@ -88,8 +89,8 @@ function ModalButtonEditor({ el, name = '', link = '', isOpen = false }) {
                                 />
                             </div>
 
-                            <div className={cx('input-wrapper')}>
-                                <div>Link</div>
+                            <div className={cx('input-wrapper')} style={{ fontSize: '1.2rem', lineHeight: '1.2rem' }}>
+                                <div style={{ marginBottom: '4px', color: '#73738c' }}>Link</div>
                                 <TextField
                                     id="btn-link-input"
                                     type="url"

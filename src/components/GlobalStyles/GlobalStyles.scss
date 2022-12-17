@@ -11,6 +11,13 @@
     --light-gray: hsla(240, 10%, 94%, 1);
     --red: hsla(0, 86%, 57%, 1);
     --green: hsla(140, 71%, 44%, 1);
+
+    --default-padding: 20px;
+    --font-family: 'Poppins', sans-serif;;
+    --default-content-font-size: 1.4rem;
+    --default-content-line-height: 1.4rem;
+    --default-border-radius: 10px;
+    --default-padding-home-page-size: 120px;
 }
 
 * {
@@ -52,5 +59,45 @@ html *::-webkit-scrollbar-track {
 
     &:hover {
         background-color: rgba(0, 0, 0, 0);
+    }
+}
+
+button,
+input,
+[tabindex] {
+    outline: none;
+    border: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+.register-wrapper {
+    display: flex;
+    padding: 12px 20px;
+    gap: 8px;
+    width: -moz-fit-content;
+    width: fit-content;
+    align-items: center;
+    background-color: #096bde;
+    color: #fff;
+    border-radius: var(--default-border-radius);
+
+    & > .item-title {
+        font-family: 'Public Sans', sans-serif;
+        font-size: 1.6rem;
+        line-height: 1.6rem;
+        font-weight: 500;
+        color: #fff;
+    }
+
+    &:hover {
+        background-color: #add3ff;
+    }
+
+    &:hover > .item-icon {
+        animation: moveToRight 0.5s infinite;
+        animation-timing-function: ease-out, step-end;
     }
 }

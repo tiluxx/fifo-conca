@@ -1,4 +1,5 @@
-import { Fragment, useState, createContext } from 'react'
+import { Fragment, useState, useEffect, createContext } from 'react'
+import { Link } from 'react-router-dom'
 import classNames from 'classnames/bind'
 import { deepmerge } from '@mui/utils'
 import { experimental_extendTheme as extendMuiTheme } from '@mui/material/styles'
@@ -21,6 +22,9 @@ import ImageBox from '~/pages/components/ImageBox'
 import ButtonBox from '~/pages/components/ButtonBox'
 import Footer from '~/pages/components/Footer'
 import ModalCropper from '~/pages/components/ModalCropper'
+import ModalPublishUrl from '~/pages/components/ModalPublishUrl'
+import ModelWelcome from '~/pages/components/ModelWelcome'
+import config from '~/config'
 import './Workspace.css'
 import ICONPortfolio from '~/utils/ICONPortfolio'
 
@@ -119,7 +123,6 @@ function saveToLS(key, value) {
         )
     }
 }
-
 const originalLayout = getFromLS('layouts') || []
 
 function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 } }) {
@@ -127,6 +130,10 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
     const [currentBreakpoint, setCurrentBreakpoint] = useState('lg')
     const [mounted, setMounted] = useState(false)
     const [layouts, setLayouts] = useState({ lg: JSON.parse(JSON.stringify(originalLayout)) })
+    const [publishUrl, setPublishUrl] = useState({
+        url: '',
+        open: false,
+    })
     const [textBoxState, setTextBoxState] = useState({
         box: {},
         editorState: null,
@@ -199,7 +206,7 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
             return newLayout
         })
         setLayouts({ lg: newLays })
-        saveToLS('layouts', newLays)
+        // saveToLS('layouts', newLays)
         setLayout(layout)
     }
 
@@ -208,6 +215,7 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
     }
 
     const generateDOM = () => {
+        console.log(layouts)
         return _.map(layouts.lg, function (l) {
             return (
                 <div key={l.box.i} data-grid={l.box}>
@@ -510,19 +518,36 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
         await icon.uploadFileToRepository(
             'index.html',
             `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Portfolio</title>
-        </head>
-        <body>
-            ${outerHtml}
-        </body>
-        </html>
+            <html lang="en">
+            <head>
+                <meta charset="utf-8" />
+                <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+                <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/apple-touch-icon.png" />
+                <link rel="icon" type="image/png" sizes="32x32" href="%PUBLIC_URL%/favicon-32x32.png" />
+                <link rel="icon" type="image/png" sizes="16x16" href="%PUBLIC_URL%/favicon-16x16.png" />
+
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <meta name="theme-color" content="#000000" />
+                <meta
+                name="description"
+                content="Portfolio creator by Con Ca"
+                />
+                <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+                <title>FIFO - Portfolio</title>
+            </head>
+            <body>
+                <noscript>You need to enable JavaScript to run this app.</noscript>
+                <div id="root">
+                ${outerHtml}</div>
+            </body>
+            </html>
         `,
         )
-        await icon.createGithubPage()
-        console.log(portfolio)
+        const publishURL = await icon.createGithubPage()
+        setPublishUrl({
+            url: `https://github.com/tiluxx/${publishURL}`,
+            open: true,
+        })
     }
 
     return (
@@ -547,6 +572,8 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                 footer,
                 setFooter,
                 setLayouts,
+                publishUrl,
+                setPublishUrl,
             }}
         >
             <StyledEngineProvider injectFirst>
@@ -569,13 +596,15 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                                     gap: 1.5,
                                 }}
                             >
-                                <IconButton
-                                    size="sm"
-                                    variant="solid"
-                                    sx={{ display: { xs: 'none', sm: 'inline-flex' } }}
-                                >
-                                    <FindInPageRoundedIcon />
-                                </IconButton>
+                                <Link to={config.routes.home}>
+                                    <IconButton
+                                        size="sm"
+                                        variant="solid"
+                                        sx={{ display: { xs: 'none', sm: 'inline-flex' } }}
+                                    >
+                                        <FindInPageRoundedIcon />
+                                    </IconButton>
+                                </Link>
                                 <Typography component="h1" fontWeight="xl">
                                     FIFO
                                 </Typography>
@@ -599,21 +628,40 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                             <div
                                 id="main-art-board"
                                 className={cx('art-board-container')}
-                                style={{ backgroundColor: globalStyles.backgroundColor }}
+                                style={{ position: 'relative', backgroundColor: globalStyles.backgroundColor }}
                             >
                                 {globalStyles.backgroundImage.croppedImageUrl !== '' && (
-                                    <div className={cx('art-board-background-wrapper')}>
+                                    <div
+                                        className={cx('art-board-background-wrapper')}
+                                        style={{
+                                            position: 'absolute',
+                                            width: '100%',
+                                        }}
+                                    >
                                         <div
                                             className={backgroundClasses}
                                             style={{
                                                 backgroundImage: `url(${globalStyles.backgroundImage.croppedImageUrl})`,
+                                                backgroundPosition: 'center center',
+                                                backgroundSize: 'cover',
+                                                width: '100%',
+                                                WebkitTransition: 'opacity 255ms',
+                                                transition: 'opacity 255ms',
+                                                height: '-webkit-calc(100vh - 64px)',
+                                                height: 'calc(100vh - 64px)',
                                             }}
                                         ></div>
                                     </div>
                                 )}
 
                                 {footer.isHaving && (
-                                    <div className={cx('footer-wrapper')}>
+                                    <div
+                                        className={cx('footer-wrapper')}
+                                        style={{
+                                            position: 'absolute',
+                                            width: '100%',
+                                        }}
+                                    >
                                         <Footer />
                                     </div>
                                 )}
@@ -621,6 +669,13 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
 
                                 <ResponsiveReactGridLayout
                                     className={cx('art-board')}
+                                    style={{
+                                        width: '100%',
+                                        minHeight: '100vh',
+                                        backgroundColor: 'transparent',
+                                        boxShadow:
+                                            '0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 3px 1px -2px rgb(0 0 0 / 12%), 0px 1px 5px 0px rgb(0 0 0 / 20%)',
+                                    }}
                                     // layouts={layouts}
                                     cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
                                     rowHeight={30}
@@ -643,6 +698,8 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                         >
                             <FunctionBar />
                         </SideNav>
+                        <ModalPublishUrl />
+                        <ModelWelcome isOpen={false} />
                     </Root>
                 </CssVarsProvider>
             </StyledEngineProvider>

@@ -163,6 +163,7 @@ class ICONPortfolio {
             })
 
             console.log(`${url} is being created`)
+            return repository
         } catch (error) {
             console.log(error)
             console.log(
