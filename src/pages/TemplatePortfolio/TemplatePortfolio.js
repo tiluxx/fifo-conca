@@ -30,9 +30,29 @@ function TemplatePortfolio() {
                                 },
                             }}
                         >
+                            <Grid
+                                item
+                                xs={12}
+                                sx={{
+                                    alignItems: 'center',
+                                    textAlign: 'center',
+                                }}
+                            >
+                                <Typography
+                                    level="h1"
+                                    fontSize="lg"
+                                    sx={{ mb: 0.5, fontSize: '2rem', lineHeight: '2rem' }}
+                                >
+                                    Choose a template or create a new one
+                                </Typography>
+                            </Grid>
                             <Grid item lg={6} xs={12}>
-                                <Card variant="outlined" sx={{ width: 320 }}>
-                                    <Typography level="h2" fontSize="md" sx={{ mb: 0.5, fontSize: '1.6rem' }}>
+                                <Card variant="outlined" sx={{ width: 320, margin: 'auto' }}>
+                                    <Typography
+                                        level="h2"
+                                        fontSize="md"
+                                        sx={{ mb: 0.5, fontSize: '1.6rem', lineHeight: '1.6rem' }}
+                                    >
                                         Architecture portfolio
                                     </Typography>
                                     <AspectRatio minHeight="120px" maxHeight="200px" sx={{ my: 2 }}>
@@ -85,13 +105,20 @@ function TemplatePortfolio() {
                                 </Card>
                             </Grid>
                             <Grid item lg={6} xs={12}>
-                                <Card variant="outlined" sx={{ width: 320 }}>
+                                <Card
+                                    variant="outlined"
+                                    sx={{
+                                        height: '279px',
+                                        width: 320,
+                                        margin: 'auto',
+                                    }}
+                                >
                                     <Box
                                         sx={{
-                                            height: '280px',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
+                                            height: '100%',
                                         }}
                                     >
                                         <Link to={config.routes.workspace}>
