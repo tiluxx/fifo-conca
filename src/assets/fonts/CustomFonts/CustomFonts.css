@@ -12,3 +12,8 @@
     font-family: 'Pandyra';
     src: url('./Pandyra.ttf');
 }
+
+@font-face {
+    font-family: 'Brown Sugar';
+    src: url('./Brown Sugar.ttf');
+}

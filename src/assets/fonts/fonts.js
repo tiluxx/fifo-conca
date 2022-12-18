@@ -21,7 +21,7 @@ const fontList = {
         ],
     },
     custom: {
-        families: ['Brand', 'Natural', 'Pandyra'],
+        families: ['Brand', 'Brown Sugar', 'Natural', 'Pandyra'],
         urls: ['./CustomFonts/CustomFonts.css'],
     },
 }
