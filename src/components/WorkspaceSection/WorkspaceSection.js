@@ -1,6 +1,9 @@
 import * as React from 'react'
+import classNames from 'classnames/bind'
 import Box from '@mui/joy/Box'
-import Sheet from '@mui/joy/Sheet'
+import styles from './WorkspaceSection.module.scss'
+
+const cx = classNames.bind(styles)
 
 export function Root(props) {
     return (
@@ -16,6 +19,9 @@ export function Root(props) {
                     },
                     gridTemplateRows: '64px 1fr',
                     minHeight: '100vh',
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
                 },
                 ...(Array.isArray(props.sx) ? props.sx : [props.sx]),
             ]}
@@ -27,7 +33,7 @@ export function Header(props) {
     return (
         <Box
             component="header"
-            className="Header"
+            className={cx('Header')}
             {...props}
             sx={[
                 {
@@ -55,7 +61,7 @@ export function SideNav(props) {
     return (
         <Box
             component="nav"
-            className="Navigation"
+            className={cx('Navigation')}
             {...props}
             sx={[
                 {
@@ -73,8 +79,8 @@ export function SideNav(props) {
 export function Main(props) {
     return (
         <Box
-            component="main"
-            className="Main"
+            component="div"
+            className={cx('Main')}
             {...props}
             sx={[{ p: 2 }, ...(Array.isArray(props.sx) ? props.sx : [props.sx])]}
         />

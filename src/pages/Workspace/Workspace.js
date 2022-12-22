@@ -130,6 +130,7 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
     const [currentBreakpoint, setCurrentBreakpoint] = useState('lg')
     const [mounted, setMounted] = useState(false)
     const [layouts, setLayouts] = useState({ lg: JSON.parse(JSON.stringify(originalLayout)) })
+    const [isLoading, setIsLoading] = useState(false)
     const [publishUrl, setPublishUrl] = useState({
         url: '',
         open: false,
@@ -451,44 +452,51 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
 
     const handlePublishPortfolio = async (e) => {
         e.preventDefault()
-        const portfolio = document.getElementById('main-art-board')
-        let outerHtml = portfolio.outerHTML
-        const icon = new ICONPortfolio()
-        await icon.authenticate('tiluxx')
-        await icon.createRepository()
-        await icon.uploadFileToRepository(
-            'index.html',
-            `
-            <html lang="en">
-            <head>
-                <meta charset="utf-8" />
-                <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-                <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/apple-touch-icon.png" />
-                <link rel="icon" type="image/png" sizes="32x32" href="%PUBLIC_URL%/favicon-32x32.png" />
-                <link rel="icon" type="image/png" sizes="16x16" href="%PUBLIC_URL%/favicon-16x16.png" />
-
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
-                <meta name="theme-color" content="#000000" />
-                <meta
-                name="description"
-                content="Portfolio creator by Con Ca"
-                />
-                <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-                <title>FIFO - Portfolio</title>
-            </head>
-            <body>
-                <noscript>You need to enable JavaScript to run this app.</noscript>
-                <div id="root">
-                ${outerHtml}</div>
-            </body>
-            </html>
-        `,
-        )
-        const publishURL = await icon.createGithubPage()
-        setPublishUrl({
-            url: `https://github.com/tiluxx/${publishURL}`,
-            open: true,
-        })
+        setIsLoading(true)
+        try {
+            const portfolio = document.getElementById('main-art-board')
+            let outerHtml = portfolio.outerHTML
+            const icon = new ICONPortfolio()
+            await icon.authenticate('tiluxx')
+            await icon.createRepository()
+            await icon.uploadFileToRepository(
+                'index.html',
+                `
+                <html lang="en" style="font-size: 62.5%;">
+                <head>
+                    <meta charset="utf-8" />
+                    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+                    <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/apple-touch-icon.png" />
+                    <link rel="icon" type="image/png" sizes="32x32" href="%PUBLIC_URL%/favicon-32x32.png" />
+                    <link rel="icon" type="image/png" sizes="16x16" href="%PUBLIC_URL%/favicon-16x16.png" />
+    
+                    <meta name="viewport" content="width=device-width, initial-scale=1" />
+                    <meta name="theme-color" content="#000000" />
+                    <meta
+                    name="description"
+                    content="Portfolio creator by Con Ca"
+                    />
+                    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+                    <title>FIFO - Portfolio</title>
+                </head>
+                <body style="margin: 0;">
+                    <noscript>You need to enable JavaScript to run this app.</noscript>
+                    <div id="root">
+                        ${outerHtml}
+                    </div>
+                </body>
+                </html>
+            `,
+            )
+            const publishURL = await icon.createGithubPage()
+            setPublishUrl({
+                url: `https://github.com/tiluxx/${publishURL}`,
+                open: true,
+            })
+            setIsLoading(false)
+        } catch (error) {
+            setIsLoading(false)
+        }
     }
 
     return (
@@ -553,6 +561,7 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
 
                             <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1.5 }}>
                                 <Button
+                                    loading={isLoading}
                                     size="lg"
                                     variant="solid"
                                     color="primary"
@@ -569,7 +578,11 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                             <div
                                 id="main-art-board"
                                 className={cx('art-board-container')}
-                                style={{ position: 'relative', backgroundColor: globalStyles.backgroundColor }}
+                                style={{
+                                    position: 'relative',
+                                    width: '100%',
+                                    backgroundColor: globalStyles.backgroundColor,
+                                }}
                             >
                                 {globalStyles.backgroundImage.croppedImageUrl !== '' && (
                                     <div
@@ -614,8 +627,6 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                                         width: '100%',
                                         minHeight: '100vh',
                                         backgroundColor: 'transparent',
-                                        boxShadow:
-                                            '0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 3px 1px -2px rgb(0 0 0 / 12%), 0px 1px 5px 0px rgb(0 0 0 / 20%)',
                                     }}
                                     // layouts={layouts}
                                     cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
