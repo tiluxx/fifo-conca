@@ -287,7 +287,6 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                         h: 6,
                         i: uuidv4(),
                         static: false,
-                        order: curLg.length,
                         type: 'textBox',
                     },
                     style: {
@@ -312,7 +311,6 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                         h: 6,
                         i: uuidv4(),
                         static: false,
-                        order: curLg.length,
                         type: 'imageBox',
                     },
                     style: {
@@ -334,7 +332,6 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                         h: 6,
                         i: uuidv4(),
                         static: false,
-                        order: curLg.length,
                         type: 'btnBox',
                     },
                     style: {
@@ -406,90 +403,35 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
         })
     }
 
-    const handleChangeStateAfterRearrange = (boxState) => {
-        if (boxState.box.type === 'textBox') {
-            setTextBoxState((prev) => {
-                const newState = {
-                    ...prev,
-                    box: { ...boxState.box },
-                }
-                return newState
-            })
-        } else if (boxState.box.type === 'imageBox') {
-            setImageBoxState((prev) => {
-                const newState = {
-                    ...prev,
-                    box: { ...boxState.box },
-                }
-                return newState
-            })
-        } else {
-            setBtnBoxState((prev) => {
-                const newState = {
-                    ...prev,
-                    box: { ...boxState.box },
-                }
-                return newState
-            })
-        }
-    }
-
     const onRearrangeOrder = (boxState, type) => {
         if (layouts.lg.length > 1) {
-            let first = {}
-            let second = {}
             setLayouts((prev) => {
                 let curLg = [...prev.lg]
-                const curOrder = boxState.box.order
+                let curIdx = curLg.findIndex((el) => el.box.i === boxState.box.i)
                 switch (type) {
                     case 'forward':
-                        if (curOrder < curLg.length - 1 && curOrder !== curLg.length - 1) {
-                            ;[curLg[curOrder], curLg[curOrder + 1]] = [curLg[curOrder + 1], curLg[curOrder]]
-                            curLg[curOrder]['box']['order'] = curOrder
-                            curLg[curOrder + 1]['box']['order'] = curOrder + 1
-                            first = { ...curLg[curOrder] }
-                            second = { ...curLg[curOrder + 1] }
-                            handleChangeStateAfterRearrange(first)
-                            handleChangeStateAfterRearrange(second)
+                        if (curIdx !== -1) {
+                            curLg.splice(curIdx + 1, 0, curLg.splice(curIdx, 1)[0])
                         }
                         break
                     case 'backward':
-                        if (curOrder > 0) {
-                            ;[curLg[curOrder], curLg[curOrder - 1]] = [curLg[curOrder - 1], curLg[curOrder]]
-                            curLg[curOrder]['box']['order'] = curOrder
-                            curLg[curOrder - 1]['box']['order'] = curOrder - 1
-                            first = { ...curLg[curOrder] }
-                            second = { ...curLg[curOrder - 1] }
-                            handleChangeStateAfterRearrange(first)
-                            handleChangeStateAfterRearrange(second)
+                        if (curIdx !== -1) {
+                            curLg.splice(curIdx - 1, 0, curLg.splice(curIdx, 1)[0])
                         }
                         break
                     case 'to-front':
-                        if (curOrder < curLg.length - 1 && curOrder !== curLg.length - 1) {
-                            ;[curLg[curOrder], curLg[curLg.length - 1]] = [curLg[curLg.length - 1], curLg[curOrder]]
-                            curLg[curOrder]['box']['order'] = curOrder
-                            curLg[curLg.length - 1]['box']['order'] = curLg.length - 1
-                            first = { ...curLg[curOrder] }
-                            second = { ...curLg[curLg.length - 1] }
-                            handleChangeStateAfterRearrange(first)
-                            handleChangeStateAfterRearrange(second)
+                        if (curIdx !== -1) {
+                            curLg.splice(curLg.length - 1, 0, curLg.splice(curIdx, 1)[0])
                         }
                         break
                     case 'to-back':
-                        if (curOrder > 0) {
-                            ;[curLg[curOrder], curLg[0]] = [curLg[0], curLg[curOrder]]
-                            curLg[curOrder]['box']['order'] = curOrder
-                            curLg[0]['box']['order'] = 0
-                            first = { ...curLg[curOrder] }
-                            second = { ...curLg[0] }
-                            handleChangeStateAfterRearrange(first)
-                            handleChangeStateAfterRearrange(second)
+                        if (curIdx !== -1) {
+                            curLg.splice(0, 0, curLg.splice(curIdx, 1)[0])
                         }
                         break
                     default:
                         break
                 }
-                curLg.sort((a, b) => (a.box.order > b.box.order ? 1 : b.box.order > a.box.order ? -1 : 0))
                 saveToLS('layouts', curLg)
 
                 return { lg: curLg }
