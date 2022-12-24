@@ -15,6 +15,7 @@ const TextBox = memo(function TextBox({ id, el }) {
         setLayouts,
         textBoxState,
         setTextBoxState,
+        setVideoBoxState,
         setBtnBoxState,
         setImageBoxState,
         customStyles,
@@ -104,6 +105,13 @@ const TextBox = memo(function TextBox({ id, el }) {
             return newState
         })
         setBtnBoxState((prev) => {
+            const newState = {
+                ...prev,
+                isFocus: false,
+            }
+            return newState
+        })
+        setVideoBoxState((prev) => {
             const newState = {
                 ...prev,
                 isFocus: false,

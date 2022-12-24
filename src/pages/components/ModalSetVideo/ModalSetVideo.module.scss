@@ -1,0 +1,14 @@
+.form-wrapper {
+    max-height: 100%;
+}
+
+.input-wrapper,
+.select-wrapper {
+    font-size: 1.2rem;
+    line-height: 1.2rem;
+
+    & > div {
+        margin-bottom: 4px;
+        color: #73738c;
+    }
+}

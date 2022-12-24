@@ -22,7 +22,6 @@ import UploadIcon from '@mui/icons-material/Upload'
 import OpacityIcon from '@mui/icons-material/Opacity'
 import FontDownloadIcon from '@mui/icons-material/FontDownload'
 import TextFormatIcon from '@mui/icons-material/TextFormat'
-import FormatClearIcon from '@mui/icons-material/FormatClear'
 import FormatBoldIcon from '@mui/icons-material/FormatBold'
 import FormatItalicIcon from '@mui/icons-material/FormatItalic'
 import FormatUnderlinedIcon from '@mui/icons-material/FormatUnderlined'
@@ -50,16 +49,19 @@ function FunctionBar() {
         textBoxState,
         setTextBoxState,
         btnBoxState,
+        imageBoxState,
+        videoBoxState,
         setBtnBoxState,
         setCustomStyles,
-        imageBoxState,
         setImageBoxState,
+        setVideoBoxState,
         onRearrangeOrder,
     } = useContext(WorkspaceActionContext)
-    const [openElementList, setOpenElementList] = useState(true)
+    // const [openElementList, setOpenElementList] = useState(true)
     const [openAppearanceImageList, setOpenAppearanceImageList] = useState(true)
     const [openAppearanceTextBoxList, setOpenAppearanceTextBoxList] = useState(true)
     const [openAppearanceBtnBoxList, setOpenAppearanceBtnBoxList] = useState(true)
+    const [openAppearanceVideoBoxList, setOpenAppearanceVideoBoxList] = useState(true)
     const [openCharacterList, setOpenCharacterList] = useState(true)
     const [openParagraphList, setOpenParagraphList] = useState(true)
     const [openPositionList, setOpenPositionList] = useState(true)
@@ -163,6 +165,13 @@ function FunctionBar() {
     const handleBtnOpacityChange = (e, value) => {
         setBtnBoxState((prev) => {
             const newState = { ...prev, btnOpacity: Number(value) }
+            return newState
+        })
+    }
+
+    const handleVideoOpacityChange = (e, value) => {
+        setVideoBoxState((prev) => {
+            const newState = { ...prev, videoOpacity: Number(value) }
             return newState
         })
     }
@@ -1446,6 +1455,75 @@ function FunctionBar() {
                                     </ListItemDecorator>
                                     <ListItemContent sx={{ color: 'neutral.500' }}>To back</ListItemContent>
                                 </ListItemButton>
+                            </ListItem>
+                        </List>
+                    )}
+                </ListItem>
+            )}
+
+            {videoBoxState && videoBoxState.isFocus && (
+                <ListItem nested sx={{ mb: '12px' }}>
+                    <ListSubheader>
+                        <h3
+                            className={cx('section-title')}
+                            style={{ fontSize: '1.2rem', lineHeight: '1.2rem', fontWeight: 500 }}
+                        >
+                            Appearance
+                        </h3>
+                        <IconButton
+                            size="sm"
+                            variant="plain"
+                            color="primary"
+                            sx={{ '--IconButton-size': '2.4rem', ml: 'auto' }}
+                            onClick={() => setOpenAppearanceVideoBoxList(!openAppearanceVideoBoxList)}
+                        >
+                            {openAppearanceVideoBoxList ? (
+                                <KeyboardArrowDownRoundedIcon
+                                    fontSize="medium"
+                                    color="primary"
+                                    sx={{
+                                        WebkitTransition: 'transform 250ms cubic-bezier(0,0,0.2,1)',
+                                        transition: 'transform 250ms cubic-bezier(0,0,0.2,1)',
+                                        WebkitTransform: 'rotatez(-180deg)',
+                                        transform: 'rotatez(-180deg)',
+                                    }}
+                                />
+                            ) : (
+                                <KeyboardArrowDownRoundedIcon
+                                    fontSize="medium"
+                                    color="primary"
+                                    sx={{
+                                        WebkitTransition: 'transform 250ms cubic-bezier(0,0,0.2,1)',
+                                        transition: 'transform 250ms cubic-bezier(0,0,0.2,1)',
+                                        WebkitTransform: 'rotatez(0deg)',
+                                        transform: 'rotatez(0deg)',
+                                    }}
+                                />
+                            )}
+                        </IconButton>
+                    </ListSubheader>
+                    {openAppearanceVideoBoxList && (
+                        <List
+                            aria-labelledby="nav-list-tags"
+                            size="sm"
+                            sx={{
+                                '--List-decorator-size': '32px',
+                            }}
+                        >
+                            <ListItem>
+                                <ListItemDecorator sx={{ color: 'neutral.500' }}>
+                                    <OpacityIcon fontSize="medium" />
+                                </ListItemDecorator>
+                                <ListItemContent sx={{ color: 'neutral.500' }}>Opacity</ListItemContent>
+                                <ListItemContent>
+                                    <Slider
+                                        valueLabelDisplay="auto"
+                                        defaultValue={100}
+                                        onChangeCommitted={(e, value) => handleVideoOpacityChange(e, value)}
+                                        min={0}
+                                        max={100}
+                                    />
+                                </ListItemContent>
                             </ListItem>
                         </List>
                     )}

@@ -20,6 +20,7 @@ import ElementBox from '~/pages/components/ElementBox'
 import TextBox from '~/pages/components/TextBox'
 import ImageBox from '~/pages/components/ImageBox'
 import ButtonBox from '~/pages/components/ButtonBox'
+import VideoBox from '~/pages/components/VideoBox'
 import Footer from '~/pages/components/Footer'
 import ModalCropper from '~/pages/components/ModalCropper'
 import ModalPublishUrl from '~/pages/components/ModalPublishUrl'
@@ -164,6 +165,15 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
         isFocus: false,
         isOpenModal: false,
     })
+    const [videoBoxState, setVideoBoxState] = useState({
+        box: {},
+        videoUrl: '',
+        isAutoPlay: false,
+        isLoop: false,
+        isMute: false,
+        videoOpacity: 100,
+        isFocus: false,
+    })
     const [customStyles, setCustomStyles] = useState({
         styleType: {
             styleNameConstant: '',
@@ -253,10 +263,27 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                                 onClick={() => onRemoveItemClick(l.box)}
                             />
                         </Fragment>
-                    ) : (
+                    ) : l.box.type === 'btnBox' ? (
                         <Fragment>
                             <ElementBox id={l.box.i} el={l}>
                                 <ButtonBox id={l.box.i} el={l} />
+                            </ElementBox>
+                            <span
+                                style={{
+                                    position: 'absolute',
+                                    width: '20px',
+                                    height: '20px',
+                                    right: '2px',
+                                    top: 0,
+                                    cursor: 'pointer',
+                                }}
+                                onClick={() => onRemoveItemClick(l.box)}
+                            />
+                        </Fragment>
+                    ) : (
+                        <Fragment>
+                            <ElementBox id={l.box.i} el={l}>
+                                <VideoBox id={l.box.i} el={l} />
                             </ElementBox>
                             <span
                                 style={{
@@ -276,7 +303,7 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
         })
     }
 
-    const onAddItem = ({ textBox = false, imageBox = false, btnBox = false } = {}) => {
+    const onAddItem = ({ textBox = false, imageBox = false, btnBox = false, videoBox = false } = {}) => {
         setLayouts((prev) => {
             let curLg = [...prev.lg]
             if (textBox) {
@@ -344,6 +371,25 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                         btnOpacity: 100,
                         isFocus: false,
                         isOpenModal: false,
+                    },
+                })
+            } else if (videoBox) {
+                curLg = curLg.concat({
+                    box: {
+                        x: 0,
+                        y: 0,
+                        w: 2,
+                        h: 6,
+                        i: uuidv4(),
+                        static: false,
+                        type: 'videoBox',
+                    },
+                    style: {
+                        videoUrl: '',
+                        isAutoPlay: false,
+                        isLoop: false,
+                        isMute: false,
+                        videoOpacity: 100,
                     },
                 })
             }
@@ -518,6 +564,8 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                 globalStyles,
                 btnBoxState,
                 setBtnBoxState,
+                videoBoxState,
+                setVideoBoxState,
                 footer,
                 setFooter,
                 setLayouts,

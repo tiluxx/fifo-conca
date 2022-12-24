@@ -8,7 +8,7 @@ import ModalButtonEditor from '~/pages/components/ModalButtonEditor'
 const cx = classNames.bind(styles)
 
 function ButtonBox({ el }) {
-    const { btnBoxState, setBtnBoxState, setImageBoxState, setTextBoxState, setLayouts } =
+    const { btnBoxState, setVideoBoxState, setBtnBoxState, setImageBoxState, setTextBoxState, setLayouts } =
         useContext(WorkspaceActionContext)
     const [curBox, setCurBox] = useState(el.box)
     const [btnName, setBtnName] = useState(el.style?.btnName)
@@ -143,6 +143,13 @@ function ButtonBox({ el }) {
             return newState
         })
         setTextBoxState((prev) => {
+            const newState = {
+                ...prev,
+                isFocus: false,
+            }
+            return newState
+        })
+        setVideoBoxState((prev) => {
             const newState = {
                 ...prev,
                 isFocus: false,

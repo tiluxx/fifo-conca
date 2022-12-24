@@ -29,6 +29,7 @@ import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
 import PhotoSizeSelectLargeIcon from '@mui/icons-material/PhotoSizeSelectLarge'
 import AddBoxIcon from '@mui/icons-material/AddBox'
 import LayersClearIcon from '@mui/icons-material/LayersClear'
+import MovieIcon from '@mui/icons-material/Movie'
 
 // import TemplateBox from '~/components/TemplateBox'
 // import images from '~/assets/images'
@@ -222,6 +223,14 @@ function ToolBar() {
                                     <PhotoIcon fontSize="medium" />
                                 </ListItemDecorator>
                                 <ListItemContent sx={{ color: 'neutral.500' }}>Image</ListItemContent>
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemButton onClick={() => onAddItem({ videoBox: true })}>
+                                <ListItemDecorator sx={{ color: 'neutral.500' }}>
+                                    <MovieIcon fontSize="medium" />
+                                </ListItemDecorator>
+                                <ListItemContent sx={{ color: 'neutral.500' }}>Video</ListItemContent>
                             </ListItemButton>
                         </ListItem>
                         <ListItem>

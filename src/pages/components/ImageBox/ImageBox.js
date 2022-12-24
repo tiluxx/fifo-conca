@@ -11,7 +11,7 @@ import styles from './ImageBox.module.scss'
 const cx = classNames.bind(styles)
 
 const ImageBox = memo(function ImageBox({ el }) {
-    const { imageBoxState, setImageBoxState, setBtnBoxState, setTextBoxState, setLayouts } =
+    const { imageBoxState, setImageBoxState, setVideoBoxState, setBtnBoxState, setTextBoxState, setLayouts } =
         useContext(WorkspaceActionContext)
     const [curBox, setCurBox] = useState(el.box)
     const [imgSrc, setImg] = useState(el.style?.croppedImageUrl)
@@ -101,6 +101,13 @@ const ImageBox = memo(function ImageBox({ el }) {
             return newState
         })
         setTextBoxState((prev) => {
+            const newState = {
+                ...prev,
+                isFocus: false,
+            }
+            return newState
+        })
+        setVideoBoxState((prev) => {
             const newState = {
                 ...prev,
                 isFocus: false,
