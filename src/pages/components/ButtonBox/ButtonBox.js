@@ -20,7 +20,6 @@ function ButtonBox({ el }) {
     const [btnOpacity, setBtnOpacity] = useState(el.style?.btnOpacity)
 
     useEffect(() => {
-        console.log(btnBoxState)
         if (btnBoxState.box?.i === curBox.i) {
             if (btnBoxState.btnName !== btnName) {
                 setBtnName(btnBoxState.btnName)

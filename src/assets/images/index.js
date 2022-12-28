@@ -2,6 +2,7 @@ const images = {
     template1: require('~/assets/images/template1.svg').default,
     iconFinal: require('~/assets/images/iconFinal.png').default,
     multitasking: require('~/assets/images/undraw_multitasking.svg').default,
+    toTheMoon: require('~/assets/images/undraw_to_the_moon.svg').default,
     pageNotFound: require('~/assets/images/undraw_page_not_found.svg').default,
     logoBlue: require('~/assets/images/logo_blue.svg').default,
     firstPage: require('~/assets/images/1.png').default,

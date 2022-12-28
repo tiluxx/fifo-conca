@@ -41,7 +41,7 @@ function Home() {
                             <Grid item lg={6} xs={12}>
                                 <div className={cx('home__illustration-wrapper')}>
                                     <img
-                                        src={images.multitasking}
+                                        src={images.toTheMoon}
                                         alt="multitasking"
                                         className={cx('home__illustration-img')}
                                     />

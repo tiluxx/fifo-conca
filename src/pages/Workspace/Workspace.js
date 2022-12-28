@@ -23,6 +23,7 @@ import ButtonBox from '~/pages/components/ButtonBox'
 import VideoBox from '~/pages/components/VideoBox'
 import Footer from '~/pages/components/Footer'
 import ModalCropper from '~/pages/components/ModalCropper'
+import ModalPrePublishUrl from '~/pages/components/ModalPrePublishUrl'
 import ModalPublishUrl from '~/pages/components/ModalPublishUrl'
 import ModelWelcome from '~/pages/components/ModelWelcome'
 import config from '~/config'
@@ -132,6 +133,10 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
     const [mounted, setMounted] = useState(false)
     const [layouts, setLayouts] = useState({ lg: JSON.parse(JSON.stringify(originalLayout)) })
     const [isLoading, setIsLoading] = useState(false)
+    const [prePublishUrl, setPrePublishUrl] = useState({
+        title: '',
+        open: false,
+    })
     const [publishUrl, setPublishUrl] = useState({
         url: '',
         open: false,
@@ -500,12 +505,12 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
         [styles['art-board-background--small-banner']]: globalStyles.backgroundImage.bgSize.smallBanner,
     })
 
-    const handlePublishPortfolio = async (e) => {
-        e.preventDefault()
+    const handlePublishPortfolio = async (productTitle) => {
         setIsLoading(true)
         try {
             const portfolio = document.getElementById('main-art-board')
-            let outerHtml = portfolio.outerHTML
+            const outerHtml = portfolio.outerHTML
+            const cssCollection = document.getElementsByTagName('head')[0].innerHTML
             const icon = new ICONPortfolio()
             await icon.authenticate('tiluxx')
             await icon.createRepository()
@@ -514,6 +519,7 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                 `
                 <html lang="en" style="font-size: 62.5%;">
                 <head>
+                    ${cssCollection}
                     <meta charset="utf-8" />
                     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
                     <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/apple-touch-icon.png" />
@@ -527,8 +533,9 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                     content="Portfolio creator by Con Ca"
                     />
                     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-                    <title>FIFO - Portfolio</title>
+                    <title>${productTitle}</title>                  
                 </head>
+
                 <body style="margin: 0;">
                     <noscript>You need to enable JavaScript to run this app.</noscript>
                     <div id="root">
@@ -573,8 +580,11 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                 footer,
                 setFooter,
                 setLayouts,
+                prePublishUrl,
+                setPrePublishUrl,
                 publishUrl,
                 setPublishUrl,
+                handlePublishPortfolio,
             }}
         >
             <StyledEngineProvider injectFirst>
@@ -617,7 +627,7 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                                     size="lg"
                                     variant="solid"
                                     color="primary"
-                                    onClick={(e) => handlePublishPortfolio(e)}
+                                    onClick={() => setPrePublishUrl({ title: '', open: true })}
                                 >
                                     Publish
                                 </Button>
@@ -679,6 +689,7 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                                         width: '100%',
                                         minHeight: '100vh',
                                         backgroundColor: 'transparent',
+                                        boxShadow: 'unset',
                                     }}
                                     // layouts={layouts}
                                     cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
@@ -702,6 +713,7 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                         >
                             <FunctionBar />
                         </SideNav>
+                        <ModalPrePublishUrl />
                         <ModalPublishUrl />
                         <ModelWelcome isOpen={false} />
                     </Root>
