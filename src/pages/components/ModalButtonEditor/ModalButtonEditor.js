@@ -20,6 +20,7 @@ function ModalButtonEditor({ el, name = '', link = '', isOpen = false }) {
     const [curBox, setCurBox] = useState(el)
     const [btnName, setBtnName] = useState(name)
     const [btnLink, setBtnLink] = useState(link)
+    const [btnVariant, setBtnVariant] = useState('solid')
 
     const handleEditButton = () => {
         setBtnBoxState((prev) => {
@@ -28,20 +29,10 @@ function ModalButtonEditor({ el, name = '', link = '', isOpen = false }) {
                 box: curBox,
                 btnName,
                 btnLink,
+                borderColor: '',
+                variant: btnVariant,
                 isFocus: true,
                 isOpenModal: false,
-            }
-            return newState
-        })
-    }
-
-    const onChangeVariant = (type) => {
-        setBtnBoxState((prev) => {
-            const newState = {
-                ...prev,
-                box: curBox,
-                variant: type,
-                isFocus: true,
             }
             return newState
         })
@@ -116,16 +107,16 @@ function ModalButtonEditor({ el, name = '', link = '', isOpen = false }) {
                                         },
                                     }}
                                 >
-                                    <Option value="solid" onMouseUp={() => onChangeVariant('solid')}>
+                                    <Option value="solid" onMouseUp={() => setBtnVariant('solid')}>
                                         Solid
                                     </Option>
-                                    <Option value="soft" onMouseUp={() => onChangeVariant('soft')}>
+                                    <Option value="soft" onMouseUp={() => setBtnVariant('soft')}>
                                         Soft
                                     </Option>
-                                    <Option value="outlined" onMouseUp={() => onChangeVariant('outlined')}>
+                                    <Option value="outlined" onMouseUp={() => setBtnVariant('outlined')}>
                                         Outlined
                                     </Option>
-                                    <Option value="plain" onMouseUp={() => onChangeVariant('plain')}>
+                                    <Option value="plain" onMouseUp={() => setBtnVariant('plain')}>
                                         Plain
                                     </Option>
                                 </Select>

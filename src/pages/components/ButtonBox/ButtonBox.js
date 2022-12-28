@@ -14,11 +14,13 @@ function ButtonBox({ el }) {
     const [btnName, setBtnName] = useState(el.style?.btnName)
     const [btnLink, setBtnLink] = useState(el.style?.btnLink)
     const [bgColor, setBgColor] = useState(el.style?.bgColor)
+    const [borderColor, setBorderColor] = useState(el.style?.borderColor)
     const [textColor, setTextColor] = useState(el.style?.textColor)
     const [btnVariant, setBtnVariant] = useState(el.style?.variant)
     const [btnOpacity, setBtnOpacity] = useState(el.style?.btnOpacity)
 
     useEffect(() => {
+        console.log(btnBoxState)
         if (btnBoxState.box?.i === curBox.i) {
             if (btnBoxState.btnName !== btnName) {
                 setBtnName(btnBoxState.btnName)
@@ -77,6 +79,22 @@ function ButtonBox({ el }) {
                         if (curEl.box.i === curBox.i) {
                             curEl.box = { ...btnBoxState.box }
                             curEl.style.bgColor = btnBoxState.bgColor
+                        }
+                        return curEl
+                    })
+                    saveToLS('layouts', curLg)
+                    return { lg: curLg }
+                })
+            }
+            if (btnBoxState.borderColor !== borderColor) {
+                setBorderColor(btnBoxState.borderColor)
+                setLayouts((prev) => {
+                    let curLg = [...prev.lg]
+                    curLg = curLg.map((element) => {
+                        const curEl = { ...element }
+                        if (curEl.box.i === curBox.i) {
+                            curEl.box = { ...btnBoxState.box }
+                            curEl.style.borderColor = btnBoxState.borderColor
                         }
                         return curEl
                     })
@@ -179,7 +197,11 @@ function ButtonBox({ el }) {
                     component="a"
                     href={btnLink}
                     variant={btnVariant}
-                    sx={{ backgroundColor: bgColor, color: textColor }}
+                    sx={{
+                        backgroundColor: bgColor,
+                        color: textColor,
+                        borderColor: borderColor,
+                    }}
                 >
                     {btnName}
                 </Button>

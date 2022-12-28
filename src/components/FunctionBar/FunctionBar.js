@@ -68,17 +68,21 @@ function FunctionBar() {
     const [openColorPopover, setOpenColorPopover] = useState(false)
     const [openBtnTextColorPopover, setBtnTextOpenColorPopover] = useState(false)
     const [openBtnBgColorPopover, setBtnBgOpenColorPopover] = useState(false)
+    const [openBtnBorderColorPopover, setBtnBorderOpenColorPopover] = useState(false)
 
     const colorPickerPopover = useRef()
-    const btnTextColorPickerPopover = useRef()
     const btnBgColorPickerPopover = useRef()
+    const btnBorderColorPickerPopover = useRef()
+    const btnTextColorPickerPopover = useRef()
 
     const close = useCallback(() => setOpenColorPopover(false), [])
-    const closeBtnTextColor = useCallback(() => setBtnTextOpenColorPopover(false), [])
     const closeBtnBgColor = useCallback(() => setBtnBgOpenColorPopover(false), [])
+    const closeBtnBorderColor = useCallback(() => setBtnBorderOpenColorPopover(false), [])
+    const closeBtnTextColor = useCallback(() => setBtnTextOpenColorPopover(false), [])
     useClickOutside(colorPickerPopover, close)
     useClickOutside(btnTextColorPickerPopover, closeBtnTextColor)
     useClickOutside(btnBgColorPickerPopover, closeBtnBgColor)
+    useClickOutside(btnBorderColorPickerPopover, closeBtnBorderColor)
 
     // const onDimensionChange = (e, type) => {
     //     setTextBoxState((prev) => {
@@ -125,6 +129,13 @@ function FunctionBar() {
     const onBtnBgColorChange = (color) => {
         setBtnBoxState((prev) => {
             const newState = { ...prev, bgColor: color }
+            return newState
+        })
+    }
+
+    const onBtnBorderColorChange = (color) => {
+        setBtnBoxState((prev) => {
+            const newState = { ...prev, borderColor: color }
             return newState
         })
     }
@@ -631,7 +642,7 @@ function FunctionBar() {
                                 <ListItemDecorator sx={{ color: 'neutral.500' }}>
                                     <FormatColorFillIcon fontSize="medium" />
                                 </ListItemDecorator>
-                                <ListItemContent sx={{ color: 'neutral.500' }}>Bg color</ListItemContent>
+                                <ListItemContent sx={{ color: 'neutral.500' }}>Background</ListItemContent>
                                 <ListItemContent sx={{ position: 'relative' }}>
                                     <div
                                         className={cx('swatch')}
@@ -686,6 +697,73 @@ function FunctionBar() {
                                                     className={cx('color-input')}
                                                     color={btnBoxState.bgColor}
                                                     onChange={onBtnBgColorChange}
+                                                />
+                                            </div>
+                                        </Card>
+                                    )}
+                                </ListItemContent>
+                            </ListItem>
+
+                            {/* Border color */}
+                            <ListItem>
+                                <ListItemDecorator sx={{ color: 'neutral.500' }}>
+                                    <FormatColorFillIcon fontSize="medium" />
+                                </ListItemDecorator>
+                                <ListItemContent sx={{ color: 'neutral.500' }}>Border</ListItemContent>
+                                <ListItemContent sx={{ position: 'relative' }}>
+                                    <div
+                                        className={cx('swatch')}
+                                        style={{
+                                            backgroundColor: btnBoxState.borderColor,
+                                            width: '28px',
+                                            height: '28px',
+                                            borderRadius: '8px',
+                                            border: '3px solid #fff',
+                                            boxShadow:
+                                                '0 0 0 1px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(0, 0, 0, 0.1)',
+                                            float: 'right',
+                                            cursor: 'pointer',
+                                        }}
+                                        onClick={() => setBtnBorderOpenColorPopover(true)}
+                                    />
+
+                                    {openBtnBorderColorPopover && (
+                                        <Card
+                                            variant="outlined"
+                                            sx={{
+                                                position: 'absolute',
+                                                right: 0,
+                                                width: '-moz-fit-content',
+                                                // eslint-disable-next-line no-dupe-keys
+                                                width: 'fit-content',
+                                                'z-index': 1,
+                                            }}
+                                        >
+                                            <div
+                                                className={cx('popover')}
+                                                style={{
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    alignItems: 'center',
+                                                    padding: '10px',
+                                                    width: '-moz-fit-content',
+                                                    width: 'fit-content',
+                                                    borderRadius: '9px',
+                                                }}
+                                                ref={btnBorderColorPickerPopover}
+                                            >
+                                                <HexColorPicker
+                                                    className={cx('color-picker')}
+                                                    color={btnBoxState.borderColor}
+                                                    style={{
+                                                        borderRadius: '10px',
+                                                    }}
+                                                    onChange={onBtnBorderColorChange}
+                                                />
+                                                <HexColorInput
+                                                    className={cx('color-input')}
+                                                    color={btnBoxState.borderColor}
+                                                    onChange={onBtnBorderColorChange}
                                                 />
                                             </div>
                                         </Card>

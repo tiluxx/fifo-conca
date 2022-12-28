@@ -1,5 +1,6 @@
 import { memo, useState, useEffect, useContext } from 'react'
 import classNames from 'classnames/bind'
+import ReactPlayer from 'react-player/youtube'
 import Button from '@mui/joy/Button'
 import Card from '@mui/joy/Card'
 import CardCover from '@mui/joy/CardCover'
@@ -17,11 +18,11 @@ const VideoBox = memo(function VideoBox({ el }) {
     const [isAutoPlay, setIsAutoPlay] = useState(el.style?.isAutoPlay)
     const [isLoop, setIsLoop] = useState(el.style?.isLoop)
     const [isMute, setIsMute] = useState(el.style?.isMute)
+    const [type, setType] = useState(el.style?.type)
     const [videoOpacity, setVideoOpacity] = useState(el.style?.videoOpacity)
     const [openModal, setOpenModal] = useState(false)
 
     useEffect(() => {
-        console.log(videoBoxState)
         if (videoBoxState.box?.i === curBox.i) {
             if (videoBoxState.videoUrl !== videoUrl) {
                 setVideoUrl(videoBoxState.videoUrl)
@@ -80,6 +81,22 @@ const VideoBox = memo(function VideoBox({ el }) {
                         if (curEl.box.i === curBox.i) {
                             curEl.box = { ...videoBoxState.box }
                             curEl.style.isMute = videoBoxState.isMute
+                        }
+                        return curEl
+                    })
+                    saveToLS('layouts', curLg)
+                    return { lg: curLg }
+                })
+            }
+            if (videoBoxState.type !== type) {
+                setType(videoBoxState.type)
+                setLayouts((prev) => {
+                    let curLg = [...prev.lg]
+                    curLg = curLg.map((element) => {
+                        const curEl = { ...element }
+                        if (curEl.box.i === curBox.i) {
+                            curEl.box = { ...videoBoxState.box }
+                            curEl.style.type = videoBoxState.type
                         }
                         return curEl
                     })
@@ -165,15 +182,31 @@ const VideoBox = memo(function VideoBox({ el }) {
                             sx={{ '--Card-radius': '0px', width: '100%', height: '100%', boxShadow: 'unset' }}
                         >
                             <CardCover>
-                                <video
-                                    style={{ width: '100%', height: '100%' }}
-                                    autoPlay
-                                    loop
-                                    muted
-                                    poster="https://assets.codepen.io/6093409/river.jpg"
-                                >
-                                    <source src={videoUrl} type="video/mp4" />
-                                </video>
+                                {type === 'youtube' ? (
+                                    <ReactPlayer
+                                        url={videoUrl}
+                                        width="100%"
+                                        height="100%"
+                                        controls
+                                        config={{
+                                            youtube: {
+                                                playerVars: { autoplay: isAutoPlay ? 1 : 0 },
+                                            },
+                                        }}
+                                        loop={isLoop}
+                                        muted={isMute}
+                                    />
+                                ) : (
+                                    <video
+                                        style={{ width: '100%', height: '100%' }}
+                                        controls={!isAutoPlay}
+                                        autoPlay={isAutoPlay}
+                                        loop={isLoop}
+                                        muted={isMute}
+                                    >
+                                        <source src={videoUrl} type="video/mp4" />
+                                    </video>
+                                )}
                             </CardCover>
                         </Card>
                     </div>
@@ -181,7 +214,6 @@ const VideoBox = memo(function VideoBox({ el }) {
                     <Button
                         variant="solid"
                         onClick={() => {
-                            console.log('here')
                             setOpenModal(true)
                         }}
                     >

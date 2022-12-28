@@ -159,6 +159,7 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
         btnName: '',
         btnLink: '',
         bgColor: '',
+        borderColor: '',
         textColor: '',
         variant: 'solid',
         btnOpacity: 100,
@@ -171,6 +172,7 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
         isAutoPlay: false,
         isLoop: false,
         isMute: false,
+        type: 'youtube',
         videoOpacity: 100,
         isFocus: false,
     })
@@ -366,6 +368,7 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                         btnName: '',
                         btnLink: '',
                         bgColor: '',
+                        borderColor: '',
                         textColor: '',
                         variant: 'solid',
                         btnOpacity: 100,
@@ -389,6 +392,7 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                         isAutoPlay: false,
                         isLoop: false,
                         isMute: false,
+                        type: 'youtube',
                         videoOpacity: 100,
                     },
                 })

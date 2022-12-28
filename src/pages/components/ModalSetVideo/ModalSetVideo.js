@@ -8,6 +8,7 @@ import Stack from '@mui/joy/Stack'
 import Select, { selectClasses } from '@mui/joy/Select'
 import Option from '@mui/joy/Option'
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
+import FileUploadIcon from '@mui/icons-material/FileUpload'
 
 import { WorkspaceActionContext } from '~/pages/Workspace'
 import styles from './ModalSetVideo.module.scss'
@@ -21,6 +22,7 @@ function ModalSetVideo({ el, openModal, setOpenModal }) {
     const [loop, setLoop] = useState(el.style?.isLoop)
     const [mute, setMute] = useState(el.style?.isMute)
     const [autoplay, setAutoplay] = useState(el.style?.isAutoPlay)
+    const [type, setType] = useState('youtube')
 
     const handleEditButton = () => {
         setVideoBoxState((prev) => {
@@ -32,9 +34,17 @@ function ModalSetVideo({ el, openModal, setOpenModal }) {
                 isLoop: loop,
                 isMute: mute,
                 isFocus: true,
+                type,
             }
             return newState
         })
+    }
+
+    const handleVideoSrcChange = (e) => {
+        const file = e.target.files[0]
+        const url = URL.createObjectURL(file)
+        setType('file')
+        setVideoUrl(url)
     }
 
     return (
@@ -67,9 +77,24 @@ function ModalSetVideo({ el, openModal, setOpenModal }) {
                             }}
                         >
                             <div className={cx('input-wrapper')} style={{ fontSize: '1.2rem', lineHeight: '1.2rem' }}>
-                                <div style={{ marginBottom: '4px', color: '#73738c' }}>Link</div>
+                                <div>Video source</div>
+                                <div
+                                    style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}
+                                >
+                                    <Button component="label" startDecorator={<FileUploadIcon />}>
+                                        Upload your video
+                                        <input
+                                            hidden
+                                            accept="video/mp4,video/x-m4v,video/*"
+                                            type="file"
+                                            onChange={handleVideoSrcChange}
+                                        />
+                                    </Button>
+                                    <span> or </span>
+                                </div>
                                 <TextField
-                                    id="btn-name-input"
+                                    id="video-link-input"
+                                    placeholder="Enter video link"
                                     type="text"
                                     step="0.1"
                                     value={videoUrl}
