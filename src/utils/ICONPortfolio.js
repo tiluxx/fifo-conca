@@ -62,7 +62,7 @@ class ICONPortfolio {
         try {
             this.repository = (
                 await this.octokit.request('POST /user/repos', {
-                    name: name ?? `ICON Web Portfolio ${uuidv4()}`,
+                    name: `ICON Web Portfolio - ${name} - ${uuidv4()}` ?? `ICON Web Portfolio ${uuidv4()}`,
                 })
             ).data
 

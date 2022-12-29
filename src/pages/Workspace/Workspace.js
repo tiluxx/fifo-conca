@@ -1,4 +1,4 @@
-import { Fragment, useState, createContext } from 'react'
+import { Fragment, useState, useRef, createContext } from 'react'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames/bind'
 import { deepmerge } from '@mui/utils'
@@ -8,6 +8,7 @@ import { extendTheme as extendJoyTheme, CssVarsProvider, StyledEngineProvider } 
 import { Box, Typography, IconButton } from '@mui/joy'
 import FindInPageRoundedIcon from '@mui/icons-material/FindInPageRounded'
 import { Responsive, WidthProvider } from 'react-grid-layout'
+import { SizeMe, withSize } from 'react-sizeme'
 import Button from '@mui/joy/Button'
 import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
@@ -30,7 +31,10 @@ import config from '~/config'
 import './Workspace.css'
 import ICONPortfolio from '~/utils/ICONPortfolio'
 
-const ResponsiveReactGridLayout = WidthProvider(Responsive)
+// const ResponsiveReactGridLayout = WidthProvider(Responsive)
+const withSizeHOC = withSize()
+const ResponsiveReactGridLayout = withSizeHOC(Responsive)
+
 const WorkspaceActionContext = createContext()
 
 const cx = classNames.bind(styles)
@@ -210,6 +214,8 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
         isHaving: false,
     })
 
+    const RGLRef = useRef()
+
     const onLayoutChange = (layout) => {
         const newLays = layouts.lg.map((el) => {
             const newLayout = { ...el }
@@ -224,7 +230,7 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
             return newLayout
         })
         setLayouts({ lg: newLays })
-        // saveToLS('layouts', newLays)
+        saveToLS('layouts', newLays)
         setLayout(layout)
     }
 
@@ -513,13 +519,12 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
             const cssCollection = document.getElementsByTagName('head')[0].innerHTML
             const icon = new ICONPortfolio()
             await icon.authenticate('tiluxx')
-            await icon.createRepository()
+            await icon.createRepository(productTitle)
             await icon.uploadFileToRepository(
                 'index.html',
                 `
                 <html lang="en" style="font-size: 62.5%;">
                 <head>
-                    ${cssCollection}
                     <meta charset="utf-8" />
                     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
                     <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/apple-touch-icon.png" />
@@ -533,12 +538,13 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                     content="Portfolio creator by Con Ca"
                     />
                     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-                    <title>${productTitle}</title>                  
+                    <title>${productTitle}</title> 
+                    ${cssCollection}                 
                 </head>
 
                 <body style="margin: 0;">
                     <noscript>You need to enable JavaScript to run this app.</noscript>
-                    <div id="root">
+                    <div id="root" style="display: flex;justify-content: center;align-items: center;">
                         ${outerHtml}
                     </div>
                 </body>
@@ -642,7 +648,8 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                                 className={cx('art-board-container')}
                                 style={{
                                     position: 'relative',
-                                    width: '100%',
+                                    width: '1441px',
+                                    transform: 'scale(0.6)',
                                     backgroundColor: globalStyles.backgroundColor,
                                 }}
                             >
@@ -663,8 +670,6 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                                                 width: '100%',
                                                 WebkitTransition: 'opacity 255ms',
                                                 transition: 'opacity 255ms',
-                                                height: '-webkit-calc(100vh - 64px)',
-                                                height: 'calc(100vh - 64px)',
                                             }}
                                         ></div>
                                     </div>
@@ -683,25 +688,51 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                                 )}
                                 <ModalCropper />
 
-                                <ResponsiveReactGridLayout
+                                <SizeMe>
+                                    {({ size }) => (
+                                        <Responsive
+                                            innerRef={RGLRef}
+                                            className={cx('art-board')}
+                                            style={{
+                                                width: '100%',
+                                                minHeight: '100vh',
+                                                backgroundColor: 'transparent',
+                                            }}
+                                            width={1441}
+                                            // layouts={layouts}
+                                            cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
+                                            rowHeight={30}
+                                            onBreakpointChange={onBreakpointChange}
+                                            onLayoutChange={(layout) => onLayoutChange(layout)}
+                                            // measureBeforeMount={true}
+                                            transformScale={0.6}
+                                            // useCSSTransforms={mounted}
+                                            allowOverlap={true}
+                                        >
+                                            {generateDOM()}
+                                        </Responsive>
+                                    )}
+                                </SizeMe>
+                                {/* <ResponsiveReactGridLayout
+                                    ref={RGLRef}
                                     className={cx('art-board')}
                                     style={{
                                         width: '100%',
                                         minHeight: '100vh',
                                         backgroundColor: 'transparent',
-                                        boxShadow: 'unset',
                                     }}
                                     // layouts={layouts}
                                     cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
                                     rowHeight={30}
                                     onBreakpointChange={onBreakpointChange}
                                     onLayoutChange={(layout) => onLayoutChange(layout)}
-                                    measureBeforeMount={false}
+                                    measureBeforeMount={true}
+                                    transformScale={0.5}
                                     useCSSTransforms={mounted}
                                     allowOverlap={true}
                                 >
                                     {generateDOM()}
-                                </ResponsiveReactGridLayout>
+                                </ResponsiveReactGridLayout> */}
                             </div>
                         </Main>
                         <SideNav
