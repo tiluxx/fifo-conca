@@ -515,6 +515,7 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
         setIsLoading(true)
         try {
             const portfolio = document.getElementById('main-art-board')
+            portfolio.style.transform = 'unset'
             const outerHtml = portfolio.outerHTML
             const cssCollection = document.getElementsByTagName('head')[0].innerHTML
             const icon = new ICONPortfolio()
@@ -539,10 +540,16 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                     />
                     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
                     <title>${productTitle}</title> 
+                    <script>
+                        function resetBoxShadow()
+                        {
+                            document.getElementsByClassName("react-grid-layout")[0].style.boxShadow = "none";
+                        }
+                    </script>
                     ${cssCollection}                 
                 </head>
 
-                <body style="margin: 0;">
+                <body style="margin: 0;"  onload="resetBoxShadow()">
                     <noscript>You need to enable JavaScript to run this app.</noscript>
                     <div id="root" style="display: flex;justify-content: center;align-items: center;">
                         ${outerHtml}
@@ -681,6 +688,7 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                                         style={{
                                             position: 'absolute',
                                             width: '100%',
+                                            bottom: '0',
                                         }}
                                     >
                                         <Footer />
@@ -692,6 +700,7 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
                                     {({ size }) => (
                                         <Responsive
                                             innerRef={RGLRef}
+                                            id="RGL-art-board"
                                             className={cx('art-board')}
                                             style={{
                                                 width: '100%',
