@@ -57,7 +57,7 @@ function Footer() {
                     >
                         {footer.backgroundImage.imageUrl !== '' && (
                             <img
-                                src={imgSrc}
+                                src="https://i.ibb.co/sR7ZWLf/icon-Final.png"
                                 alt="ICON Academic Club"
                                 className={cx('logo-img')}
                                 style={{ width: '25%' }}

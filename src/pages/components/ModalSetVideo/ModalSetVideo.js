@@ -1,4 +1,6 @@
-import { Fragment, useState, useContext } from 'react'
+import { Fragment, useState, useRef, useContext } from 'react'
+import { IKUpload } from 'imagekitio-react'
+import { v4 as uuidv4 } from 'uuid'
 import classNames from 'classnames/bind'
 import Button from '@mui/joy/Button'
 import TextField from '@mui/joy/TextField'
@@ -25,6 +27,9 @@ function ModalSetVideo({ el, openModal, setOpenModal }) {
     const [autoplay, setAutoplay] = useState(el.style?.isAutoPlay)
     const [type, setType] = useState('youtube')
 
+    const inputRefTest = useRef()
+    const ikUploadRefTest = useRef()
+
     const handleEditButton = () => {
         setVideoBoxState((prev) => {
             const newState = {
@@ -46,6 +51,15 @@ function ModalSetVideo({ el, openModal, setOpenModal }) {
         const url = URL.createObjectURL(file)
         setType('file')
         setVideoUrl(url)
+    }
+
+    const onError = (err) => {
+        console.log('Error', err)
+    }
+
+    const onSuccess = (res) => {
+        setType('file')
+        setVideoUrl(res.url)
     }
 
     return (
@@ -92,14 +106,26 @@ function ModalSetVideo({ el, openModal, setOpenModal }) {
                                 <div
                                     style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}
                                 >
-                                    <Button component="label" startDecorator={<FileUploadIcon />}>
+                                    <IKUpload
+                                        fileName={`upload-${uuidv4()}`}
+                                        onError={onError}
+                                        onSuccess={onSuccess}
+                                        style={{ display: 'none' }}
+                                        inputRef={inputRefTest}
+                                        ref={ikUploadRefTest}
+                                    />
+                                    <Button
+                                        // component="label"
+                                        startDecorator={<FileUploadIcon />}
+                                        onClick={() => inputRefTest.current.click()}
+                                    >
                                         Upload your video
-                                        <input
+                                        {/* <input
                                             hidden
                                             accept="video/mp4,video/x-m4v,video/*"
                                             type="file"
                                             onChange={handleVideoSrcChange}
-                                        />
+                                        /> */}
                                     </Button>
                                     <span> or </span>
                                 </div>

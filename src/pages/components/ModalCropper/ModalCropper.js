@@ -7,6 +7,7 @@ import Modal from '@mui/joy/Modal'
 import ModalDialog from '@mui/joy/ModalDialog'
 import ModalClose from '@mui/joy/ModalClose'
 import Stack from '@mui/joy/Stack'
+import uploadImageToImgBB from '~/utils/uploadImageToImgBB'
 import 'react-image-crop/dist/ReactCrop.css'
 
 import { WorkspaceActionContext } from '~/pages/Workspace'
@@ -82,32 +83,36 @@ function ModalCropper({ el }) {
         if (imgRef.current && crop.width && crop.height) {
             const imgName = el ? `${el.i}.jpeg` : 'bgImage.jpeg'
             const croppedImageUrl = await getCroppedImg(imgRef.current, crop, imgName)
-            if (globalStyles.backgroundImage.isFocus || !el) {
-                setGlobalStyles((prev) => {
-                    const newState = {
-                        ...prev,
-                        backgroundImage: {
-                            ...prev.backgroundImage,
-                            croppedImageUrl: croppedImageUrl,
-                            isFocus: false,
-                        },
+            uploadImageToImgBB(croppedImageUrl.base64)
+                .then((res) => {
+                    if (globalStyles.backgroundImage.isFocus || !el) {
+                        setGlobalStyles((prev) => {
+                            const newState = {
+                                ...prev,
+                                backgroundImage: {
+                                    ...prev.backgroundImage,
+                                    croppedImageUrl: res.data.data.display_url,
+                                    isFocus: false,
+                                },
+                            }
+                            return newState
+                        })
+                    } else {
+                        setImageBoxState((prev) => {
+                            const newState = {
+                                ...prev,
+                                box: el,
+                                croppedImageUrl: res.data.data.display_url,
+                                selectFile: {
+                                    file: [],
+                                    isHavingFile: false,
+                                },
+                            }
+                            return newState
+                        })
                     }
-                    return newState
                 })
-            } else {
-                setImageBoxState((prev) => {
-                    const newState = {
-                        ...prev,
-                        box: el,
-                        croppedImageUrl: croppedImageUrl,
-                        selectFile: {
-                            file: [],
-                            isHavingFile: false,
-                        },
-                    }
-                    return newState
-                })
-            }
+                .catch((err) => console.error(err))
         }
     }
 
@@ -166,7 +171,8 @@ function ModalCropper({ el }) {
                         URL.revokeObjectURL(fileUrl)
                     }
                     fileUrl = window.URL.createObjectURL(blob)
-                    resolve(fileUrl)
+                    let dataURL = canvas.toDataURL('image/*')
+                    resolve({ fileUrl, base64: dataURL.replace(/^data:image\/?[A-z]*;base64,/, '') })
                 },
                 'image/*',
                 1,
