@@ -20,15 +20,15 @@ const styleList = {
         },
         HEADING: {
             fontSize: '2.8rem',
-            lineHeight: '23px',
+            lineHeight: '2.8rem',
         },
         SUB_HEADING: {
             fontSize: '2.2rem',
-            lineHeight: '17px',
+            lineHeight: '2.2rem',
         },
         CONTENT: {
             fontSize: '1.4rem',
-            lineHeight: '14px',
+            lineHeight: '1.4rem',
         },
         SMALL_CONTENT: {
             fontSize: '1.1rem',
