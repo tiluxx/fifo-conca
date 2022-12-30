@@ -77,8 +77,6 @@ const ImageBox = memo(function ImageBox({ el }) {
 
     const onFocusImage = (e) => {
         e.preventDefault()
-        console.log('clicked')
-        console.log(curBox)
         setImageBoxState((prev) => {
             const newState = {
                 ...prev,
