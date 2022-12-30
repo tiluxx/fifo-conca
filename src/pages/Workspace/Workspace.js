@@ -7,8 +7,8 @@ import colors from '@mui/joy/colors'
 import { extendTheme as extendJoyTheme, CssVarsProvider, StyledEngineProvider } from '@mui/joy/styles'
 import { Box, Typography, IconButton } from '@mui/joy'
 import FindInPageRoundedIcon from '@mui/icons-material/FindInPageRounded'
-import { Responsive, WidthProvider } from 'react-grid-layout'
-import { SizeMe, withSize } from 'react-sizeme'
+import { Responsive } from 'react-grid-layout'
+import { SizeMe } from 'react-sizeme'
 import Button from '@mui/joy/Button'
 import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
@@ -30,10 +30,6 @@ import ModelWelcome from '~/pages/components/ModelWelcome'
 import config from '~/config'
 import './Workspace.css'
 import ICONPortfolio from '~/utils/ICONPortfolio'
-
-// const ResponsiveReactGridLayout = WidthProvider(Responsive)
-const withSizeHOC = withSize()
-const ResponsiveReactGridLayout = withSizeHOC(Responsive)
 
 const WorkspaceActionContext = createContext()
 
@@ -514,7 +510,7 @@ function Workspace({ rowHeight = 30, cols = { lg: 12, md: 12, sm: 12, xs: 12, xx
     const handlePublishPortfolio = async (productTitle) => {
         setIsLoading(true)
         try {
-            const portfolio = document.getElementById('main-art-board')
+            const portfolio = document.importNode(document.getElementById('main-art-board'), true)
             portfolio.style.transform = 'unset'
             const outerHtml = portfolio.outerHTML
             const cssCollection = document.getElementsByTagName('head')[0].innerHTML

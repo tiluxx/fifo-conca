@@ -57,7 +57,7 @@ function Footer() {
                     >
                         {footer.backgroundImage.imageUrl !== '' && (
                             <img
-                                src="https://i.ibb.co/sR7ZWLf/icon-Final.png"
+                                src={imgSrc}
                                 alt="ICON Academic Club"
                                 className={cx('logo-img')}
                                 style={{ width: '25%' }}
@@ -74,7 +74,11 @@ function Footer() {
                             justifyContent: 'center',
                         }}
                     >
-                        <img src={logo} alt="ICON Academic Club" style={{ width: '8vh' }} />
+                        <img
+                            src="https://i.ibb.co/sR7ZWLf/icon-Final.png"
+                            alt="ICON Academic Club"
+                            style={{ width: '8vh' }}
+                        />
                         <span
                             className={cx('my-team')}
                             style={{

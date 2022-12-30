@@ -48,8 +48,8 @@ function ModelWelcome({ isOpen }) {
                         Welcome
                     </Typography>
                     <Typography id="modal-desc-welcome" textColor="text.tertiary" sx={{ fontSize: '1.4rem' }}>
-                        If you choose a template, please click button bellow to load your workspace, and then close the
-                        modal; otherwise, close the modal
+                        If you choose a template, please click button bellow to load your workspace, and close the
+                        modal, and add one element to make the workspace visible; otherwise, close the modal
                     </Typography>
                     <Button
                         variant="solid"

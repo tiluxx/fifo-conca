@@ -37,6 +37,7 @@ import StyleBox from '~/components/StyleBox'
 import { WorkspaceActionContext } from '~/pages/Workspace'
 import styles from './ToolBar.module.scss'
 import useClickOutside from '~/hooks/useClickOutside'
+import uploadImageToImgBB from '~/utils/uploadImageToImgBB'
 import './ToolBar.css'
 
 const cx = classNames.bind(styles)
@@ -101,16 +102,22 @@ function ToolBar() {
     }
 
     const onSelectFooterImage = (imageList, addUpdateIndex) => {
-        setFooter((prev) => {
-            const newState = {
-                ...prev,
-                backgroundImage: {
-                    ...prev.backgroundImage,
-                    imageUrl: imageList[0].data_url,
-                },
-            }
-            return newState
-        })
+        const newImgUrl = imageList[0].data_url.replace(/^data:image\/?[A-z]*;base64,/, '')
+        console.log(newImgUrl)
+        uploadImageToImgBB(newImgUrl)
+            .then((res) => {
+                setFooter((prev) => {
+                    const newState = {
+                        ...prev,
+                        backgroundImage: {
+                            ...prev.backgroundImage,
+                            imageUrl: res.data.data.display_url,
+                        },
+                    }
+                    return newState
+                })
+            })
+            .catch((err) => console.error(err))
     }
 
     const onRemoveFooterImage = () => {

@@ -1,4 +1,3 @@
-import { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import Grid from '@mui/material/Grid'
 import AspectRatio from '@mui/joy/AspectRatio'
@@ -9,7 +8,7 @@ import Typography from '@mui/joy/Typography'
 import classNames from 'classnames/bind'
 
 import styles from './TemplatePortfolio.module.scss'
-import { saveToLS } from '~/pages/Workspace'
+import Header from '~/layouts/Header'
 import config from '~/config'
 import { templateObj } from './templateArchi'
 
@@ -18,6 +17,7 @@ const cx = classNames.bind(styles)
 function TemplatePortfolio() {
     return (
         <div className={cx('container')}>
+            <Header />
             <div className={cx('content')}>
                 <div className={cx('content-wrapper')}>
                     <div className={cx('initial-home-part')}>
@@ -53,12 +53,12 @@ function TemplatePortfolio() {
                                         fontSize="md"
                                         sx={{ mb: 0.5, fontSize: '1.6rem', lineHeight: '1.6rem' }}
                                     >
-                                        Architecture portfolio
+                                        3D Renders portfolio
                                     </Typography>
                                     <AspectRatio minHeight="120px" maxHeight="200px" sx={{ my: 2 }}>
                                         <img
-                                            src="https://images.unsplash.com/photo-1668796324794-8a2d75e32b09?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80"
-                                            srcSet="https://images.unsplash.com/photo-1668796324794-8a2d75e32b09?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80"
+                                            src="https://images.unsplash.com/photo-1670582379294-b534a8e6528e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80"
+                                            srcSet="https://images.unsplash.com/photo-1670582379294-b534a8e6528e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80"
                                             loading="lazy"
                                             alt=""
                                         />
@@ -71,7 +71,7 @@ function TemplatePortfolio() {
                                             aria-label="preview-portfolio"
                                             sx={{ fontSize: '1.4rem', lineHeight: '1.4rem' }}
                                             component="a"
-                                            href="https://tiluxx.github.io/ICON-Web-Portfolio-CoCa-Template/"
+                                            href="https://tiluxx.github.io/ICON-Web-Portfolio---3D-Renders-Portfolio-Display-Preview/"
                                         >
                                             Preview
                                         </Button>
